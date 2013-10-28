@@ -32,7 +32,7 @@ public class Bencoder {
      * Encodes integer value to Bencode.
      *
      * @param i integer to encode
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void encode(int i) throws IOException {
         outputStream.write(("i" + i + "e").getBytes());
@@ -42,7 +42,7 @@ public class Bencoder {
      * Encodes string value to Bencode using {@code charset}.
      *
      * @param s string to encode
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void encode(String s) throws IOException {
         outputStream.write((s.length() + ":" + s).getBytes(charset));
@@ -52,7 +52,7 @@ public class Bencoder {
      * Encodes bytes as Bencode byte string.
      *
      * @param bytes bytes to encode
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void encode(byte[] bytes) throws IOException {
         outputStream.write((bytes.length + ":").getBytes());
@@ -65,7 +65,7 @@ public class Bencoder {
      * containing elements which meet stated criteria.
      *
      * @param list list to encode
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void encode(List<Object> list) throws IOException {
         outputStream.write("l".getBytes());
@@ -80,7 +80,7 @@ public class Bencoder {
      * See {@link #encode(java.util.List)}.
      *
      * @param dictionary dictionary to encode represented as {@code Map}
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public void encode(Map<String, Object> dictionary) throws IOException {
         outputStream.write("d".getBytes());
@@ -93,8 +93,9 @@ public class Bencoder {
 
     /**
      * All black magic goes here.
+     *
      * @param object object to encode in Bencode
-     * @throws {@code IOException} if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
     private void encodeObject(Object object) throws IOException {
