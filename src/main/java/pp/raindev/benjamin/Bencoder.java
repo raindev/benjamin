@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Bencode data encoder.
@@ -84,7 +85,7 @@ public class Bencoder {
      */
     public void encode(Map<String, Object> dictionary) throws IOException {
         outputStream.write("d".getBytes());
-        for (Map.Entry<String, Object> entry : dictionary.entrySet()) {
+        for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
