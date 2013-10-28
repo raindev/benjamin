@@ -4,13 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test for {@link Bencoder}
@@ -27,40 +26,46 @@ public class BencoderTest {
     }
 
     @Test
-    public void encodeInteger() throws UnsupportedEncodingException {
+    public void encodeInteger() throws IOException {
         bencoder.encode(47);
         assertArrayEquals("Wrong integer encoding",
-                "i47e".getBytes(charset), output.toByteArray());
+                "i47e".getBytes(), output.toByteArray());
     }
 
     @Test
-    public void encodeString() throws UnsupportedEncodingException {
+    public void encodeString() throws IOException {
         bencoder.encode("watermill⌘");
         assertArrayEquals("Wrong string encoding",
                 "10:watermill⌘".getBytes(charset), output.toByteArray());
     }
 
     @Test
-    public void encodeBytes() {
+    public void encodeBytes() throws IOException {
         byte[] bytes = new byte[]{(byte) 0x65, (byte) 0x10, (byte) 0xf3, (byte) 0x29};
         bencoder.encode(bytes);
+        byte[] encoded = output.toByteArray();
         assertArrayEquals("Byte strings should not be changed during encoding",
-                bytes, output.toByteArray());
+                bytes, Arrays.copyOfRange(encoded, 2, encoded.length));
+        assertArrayEquals("Wrong byte string length marker",
+                "4:".getBytes(), Arrays.copyOfRange(encoded, 0, 2));
     }
 
     @Test
-    public void encodeList() throws UnsupportedEncodingException {
+    public void encodeList() throws IOException {
         bencoder.encode(Arrays.asList(new Object[]{47, "watermill⌘"}));
-        assertEquals("List encoded not properly",
-                "li47e10:watermill⌘e".getBytes(charset), output.toByteArray());
+        assertArrayEquals("List encoded not properly",
+                "li47e10:watermill⌘e".getBytes(), output.toByteArray());
+        System.out.println(Arrays.toString(output.toByteArray()));
     }
 
     @Test
-    public void encodeDictionary() {
+    public void encodeDictionary() throws IOException {
         Map<String, Object> dictionary = new HashMap<>();
+        dictionary.put("life", 47);
+        dictionary.put("grass", "green");
         bencoder.encode(dictionary);
         //noinspection SpellCheckingInspection
-        assertEquals("Dictionary encoded not properly",
-                "d4:lifei47e5:grass5:greene");
+        assertArrayEquals("Dictionary encoded not properly",
+                "d4:lifei47e5:grass5:greene".getBytes(), output.toByteArray());
     }
 }
