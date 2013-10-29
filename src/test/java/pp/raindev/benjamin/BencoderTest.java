@@ -123,7 +123,8 @@ public class BencoderTest {
     @Test
     public void encodeComplexList() throws IOException {
         HashMap<Object, Object> dictionary = new HashMap<>();
-        dictionary.put("list", Arrays.asList("hello", "world", 47));
+        //noinspection OctalInteger
+        dictionary.put("list", Arrays.asList("hello", "world", new byte[]{064, 067}));
         dictionary.put("zero", 0);
         List<Object> list = Arrays.asList(new Object[]{
                 dictionary,
@@ -132,7 +133,7 @@ public class BencoderTest {
         bencoder.encode(list);
 
         assertArrayEquals("List-based tree is not encoded properly",
-                "ld4:listl5:hello5:worldi47ee4:zeroi0eei13ee".getBytes(),
+                "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee".getBytes(),
                 output.toByteArray());
     }
 }
