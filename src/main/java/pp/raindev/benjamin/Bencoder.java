@@ -12,6 +12,12 @@ import java.util.TreeMap;
  */
 public class Bencoder {
 
+	private static final byte[] INTEGER_MARK = "i".getBytes();
+	private static final byte[] LIST_MARK = "l".getBytes();
+	private static final byte[] DICTIONARY_MARK = "d".getBytes();
+	private static final byte[] STRING_SPLIT = ":".getBytes();
+	private static final byte[] END_MARK = "e".getBytes();
+
     /**
      * Used to encode character data.
      */
@@ -36,7 +42,9 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     public void encode(int i) throws IOException {
-        outputStream.write(("i" + i + "e").getBytes());
+		outputStream.write(INTEGER_MARK);
+        outputStream.write(Integer.toString(i).getBytes());
+		outputStream.write(END_MARK);
     }
 
     /**
@@ -46,7 +54,9 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     public void encode(String s) throws IOException {
-        outputStream.write((s.length() + ":" + s).getBytes(charset));
+		outputStream.write(Integer.toString(s.length()).getBytes());
+		outputStream.write(STRING_SPLIT);
+        outputStream.write(s.getBytes(charset));
     }
 
     /**
@@ -56,7 +66,8 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     public void encode(byte[] bytes) throws IOException {
-        outputStream.write((bytes.length + ":").getBytes());
+        outputStream.write(Integer.toString(bytes.length).getBytes());
+		outputStream.write(STRING_SPLIT);
         outputStream.write(bytes);
     }
 
@@ -69,11 +80,11 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     public void encode(List<Object> list) throws IOException {
-        outputStream.write("l".getBytes());
+        outputStream.write(LIST_MARK);
         for (Object object : list) {
             encodeObject(object);
         }
-        outputStream.write("e".getBytes());
+        outputStream.write(END_MARK);
     }
 
     /**
@@ -84,12 +95,12 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     public void encode(Map<String, Object> dictionary) throws IOException {
-        outputStream.write("d".getBytes());
+        outputStream.write(DICTIONARY_MARK);
         for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
-        outputStream.write("e".getBytes());
+        outputStream.write(END_MARK);
     }
 
     /**

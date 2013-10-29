@@ -12,6 +12,12 @@ import java.util.Map;
  * Bencode data decoder.
  */
 public class Bdecoder {
+	private static final char INTEGER_MARK = 'i';
+	private static final char LIST_MARK = 'l';
+	private static final char DICTIONARY_MARK = 'd';
+	private static final char STRING_SPLIT = ':';
+	private static final char END_MARK = 'e';
+
     private final String charset;
     private final PushbackInputStream inputStream;
 
@@ -35,12 +41,12 @@ public class Bdecoder {
      */
     public int readInt() throws IOException {
         int chr;
-        if ((chr = inputStream.read()) != 'i') {
+        if ((chr = inputStream.read()) != INTEGER_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'i' or end of stream reached: "
                     + (char) chr);
         }
         StringBuilder number = new StringBuilder();
-        while ((chr = inputStream.read()) != 'e') {
+        while ((chr = inputStream.read()) != END_MARK) {
             if (chr == -1) {
                 throw new IllegalStateException("End of stream was reached prematurely");
             }
@@ -72,7 +78,7 @@ public class Bdecoder {
     public byte[] readBytes() throws IOException {
         int chr;
         StringBuilder lengthString = new StringBuilder();
-        while ((chr = inputStream.read()) != ':') {
+        while ((chr = inputStream.read()) != STRING_SPLIT) {
             if (chr == -1) {
                 throw new IllegalStateException("End of stream was reached prematurely");
             }
@@ -94,12 +100,12 @@ public class Bdecoder {
      */
     public List<Object> readList() throws IOException {
         int chr;
-        if ((chr = inputStream.read()) != 'l') {
+        if ((chr = inputStream.read()) != LIST_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'l' or end of stream reached: "
                     + (char) chr);
         }
         List<Object> list = new ArrayList<>();
-        while ((chr = inputStream.read()) != 'e') {
+        while ((chr = inputStream.read()) != END_MARK) {
             if (chr == -1) {
                 throw new IllegalStateException("End of stream was reached prematurely");
             }
@@ -117,12 +123,12 @@ public class Bdecoder {
      */
     public Map<String, Object> readDictionary() throws IOException {
         int chr;
-        if ((chr = inputStream.read()) != 'd') {
+        if ((chr = inputStream.read()) != DICTIONARY_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'd' or end of stream reached: "
                     + (char) chr);
         }
         Map<String, Object> dictionary = new HashMap<>();
-        while ((chr = inputStream.read()) != 'e') {
+        while ((chr = inputStream.read()) != END_MARK) {
             if (chr == -1) {
                 throw new IllegalStateException("End of stream was reached prematurely");
             }
@@ -137,11 +143,11 @@ public class Bdecoder {
 
     private Object readObject(int chr) throws IOException {
         switch (chr) {
-            case 'i':
+            case INTEGER_MARK:
                 return readInt();
-            case 'l':
+            case LIST_MARK:
                 return readList();
-            case 'd':
+            case DICTIONARY_MARK:
                 return readDictionary();
             default:
                 return readString();
