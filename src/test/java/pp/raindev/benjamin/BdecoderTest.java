@@ -79,7 +79,7 @@ public class BdecoderTest {
 
     @Test
     public void decodeString() throws IOException {
-        input = new ByteArrayInputStream("7:smileΩ".getBytes());
+        input = new ByteArrayInputStream("7:smileΩ".getBytes(charset));
         bdecoder = new Bdecoder(charset, input);
 
         assertEquals("String is not decoded properly",

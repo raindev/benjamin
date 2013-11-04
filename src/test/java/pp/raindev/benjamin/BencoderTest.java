@@ -73,7 +73,7 @@ public class BencoderTest {
         bencoder.encode(Arrays.asList(new Object[]{47, "watermill⌘"}));
 
         assertArrayEquals("List encoded not properly",
-                "li47e10:watermill⌘e".getBytes(), output.toByteArray());
+                "li47e10:watermill⌘e".getBytes(charset), output.toByteArray());
     }
 
     @Test
