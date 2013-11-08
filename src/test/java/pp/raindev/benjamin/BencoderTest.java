@@ -122,18 +122,23 @@ public class BencoderTest {
 
     @Test
     public void encodeComplexList() throws IOException {
-        HashMap<Object, Object> dictionary = new HashMap<>();
+        Map<String, Object> dictionary = new HashMap<>();
         //noinspection OctalInteger
         dictionary.put("list", Arrays.asList("hello", "world", new byte[]{064, 067}));
         dictionary.put("zero", 0);
-        List<Object> list = Arrays.asList(new Object[]{
-                dictionary,
-                13
-        });
+        List<Object> list = Arrays.asList(dictionary, 13);
         bencoder.encode(list);
 
         assertArrayEquals("List-based tree is not encoded properly",
                 "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee".getBytes(),
                 output.toByteArray());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void encodeInvalidDictionary() throws IOException {
+        Map<String, Object> dictionary = new HashMap<>();
+        dictionary.put("key", "value");
+        dictionary.put("oops!", 47.0);
+        bencoder.encode(dictionary);
     }
 }

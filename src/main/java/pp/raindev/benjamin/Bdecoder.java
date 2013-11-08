@@ -12,11 +12,11 @@ import java.util.Map;
  * Bencode data decoder.
  */
 public class Bdecoder {
-	private static final char INTEGER_MARK = 'i';
-	private static final char LIST_MARK = 'l';
-	private static final char DICTIONARY_MARK = 'd';
-	private static final char STRING_SPLIT = ':';
-	private static final char END_MARK = 'e';
+    private static final char INTEGER_MARK = 'i';
+    private static final char LIST_MARK = 'l';
+    private static final char DICTIONARY_MARK = 'd';
+    private static final char STRING_SPLIT = ':';
+    private static final char END_MARK = 'e';
 
     private final String charset;
     private final PushbackInputStream inputStream;
@@ -84,7 +84,12 @@ public class Bdecoder {
             }
             lengthString.append((char) chr);
         }
-        int length = Integer.valueOf(lengthString.toString());
+        int length;
+        try {
+            length = Integer.valueOf(lengthString.toString());
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Length specifier was expected");
+        }
         byte[] byteString = new byte[length];
         if (inputStream.read(byteString) != length) {
             throw new IllegalStateException("End of stream was reached prematurely during string reading");
