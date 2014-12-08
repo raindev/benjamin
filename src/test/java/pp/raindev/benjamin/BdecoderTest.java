@@ -47,6 +47,14 @@ public class BdecoderTest {
                 -47, bdecoder.readInt());
     }
 
+    @Test
+    public void decodeLongInteger() throws IOException {
+        bdecoder = new Bdecoder(charset, inputStream("i2438987776e"));
+
+        assertEquals("Numbers larger than 32 bits should be handled",
+                2438987776L, bdecoder.readInt());
+    }
+
     /**
      * Negative zero disallowed in Bencode.
      *
@@ -146,7 +154,7 @@ public class BdecoderTest {
         bdecoder = new Bdecoder(charset, inputStream("l4:lanei47ee"));
 
         assertEquals("List decoded not properly",
-                Arrays.asList(new Object[]{"lane", 47}), bdecoder.readList());
+                Arrays.asList(new Object[]{"lane", 47L}), bdecoder.readList());
     }
 
     @Test
@@ -154,8 +162,8 @@ public class BdecoderTest {
         bdecoder = new Bdecoder(charset, inputStream("l2:coi47eli47ei42eed4:lifei42eee"));
 
         HashMap<String, Object> dictionary = new HashMap<>();
-        dictionary.put("life", 42);
-        List<Object> list = Arrays.asList("co", 47, Arrays.asList(47, 42), dictionary);
+        dictionary.put("life", 42L);
+        List<Object> list = Arrays.asList("co", 47L, Arrays.asList(47L, 42L), dictionary);
 
         assertEquals("List-based tree is not decoded properly",
                 list, bdecoder.readList());
@@ -185,7 +193,7 @@ public class BdecoderTest {
 
         Map<String, Object> dictionary = new HashMap<>();
         dictionary.put("key", "value");
-        dictionary.put("n", 5);
+        dictionary.put("n", 5L);
         dictionary.put("sun", "grass");
 
         assertEquals("Dictionary decoded not properly",

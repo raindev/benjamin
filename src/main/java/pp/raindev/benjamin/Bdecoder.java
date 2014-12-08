@@ -39,7 +39,7 @@ public class Bdecoder {
      * @return decoded integer
      * @throws IOException if an I/O error occurs
      */
-    public int readInt() throws IOException {
+    public long readInt() throws IOException {
         int chr;
         if ((chr = inputStream.read()) != INTEGER_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'i' or end of stream reached: "
@@ -56,7 +56,7 @@ public class Bdecoder {
         if (numberString.equals("-0")) {
             throw new IllegalArgumentException("Negative zero is not valid number");
         }
-        return Integer.valueOf(numberString);
+        return Long.valueOf(numberString);
     }
 
     /**
