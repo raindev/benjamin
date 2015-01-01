@@ -1,4 +1,4 @@
-package pp.raindev.benjamin;
+package org.benjamin;
 
 import org.junit.Test;
 
