@@ -1,2 +1,5 @@
-# Maven output
-target/
+# Gradle output
+build/
+
+# Gradle project cache
+.gradle/
