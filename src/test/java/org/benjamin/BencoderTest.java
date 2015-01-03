@@ -1,13 +1,13 @@
 package org.benjamin;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Test for {@link Bencoder}
@@ -16,11 +16,12 @@ import static org.junit.Assert.assertArrayEquals;
 public class BencoderTest {
 
     private static final String charset = "utf-8";
-    private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Bencoder bencoder;
 
-    @Before
+    @BeforeMethod
     public void setUp() throws Exception {
+        output = new ByteArrayOutputStream();
         bencoder = new Bencoder(charset, output);
     }
 
@@ -28,32 +29,32 @@ public class BencoderTest {
     public void encodeInteger() throws IOException {
         bencoder.encode(47);
 
-        assertArrayEquals("Wrong integer encoding",
-                "i47e".getBytes(), output.toByteArray());
+        assertEquals(output.toByteArray(), "i47e".getBytes(),
+                "Wrong integer encoding");
     }
 
     @Test
     public void encodeNegativeInteger() throws IOException {
         bencoder.encode(-13);
 
-        assertArrayEquals("Wrong negative integer encoding",
-                "i-13e".getBytes(), output.toByteArray());
+        assertEquals(output.toByteArray(), "i-13e".getBytes(),
+                "Wrong negative integer encoding");
     }
 
     @Test
     public void encodeZero() throws IOException {
         bencoder.encode(0);
 
-        assertArrayEquals("Wrong zero encoding",
-                "i0e".getBytes(), output.toByteArray());
+        assertEquals(output.toByteArray(), "i0e".getBytes(),
+                "Wrong zero encoding");
     }
 
     @Test
     public void encodeString() throws IOException {
         bencoder.encode("watermill⌘");
 
-        assertArrayEquals("Wrong string encoding",
-                "10:watermill⌘".getBytes(charset), output.toByteArray());
+        assertEquals(output.toByteArray(), "10:watermill⌘".getBytes(charset),
+                "Wrong string encoding");
     }
 
     @Test
@@ -62,18 +63,18 @@ public class BencoderTest {
         bencoder.encode(bytes);
         byte[] encoded = output.toByteArray();
 
-        assertArrayEquals("Wrong byte string length marker",
-                "4:".getBytes(), Arrays.copyOfRange(encoded, 0, 2));
-        assertArrayEquals("Byte strings should not be changed during encoding",
-                bytes, Arrays.copyOfRange(encoded, 2, encoded.length));
+        assertEquals(Arrays.copyOfRange(encoded, 0, 2), "4:".getBytes(),
+                "Wrong byte string length marker");
+        assertEquals(Arrays.copyOfRange(encoded, 2, encoded.length), bytes,
+                "Byte strings should not be changed during encoding");
     }
 
     @Test
     public void encodeList() throws IOException {
         bencoder.encode(Arrays.asList(new Object[]{47, "watermill⌘"}));
 
-        assertArrayEquals("List encoded not properly",
-                "li47e10:watermill⌘e".getBytes(charset), output.toByteArray());
+        assertEquals(output.toByteArray(), "li47e10:watermill⌘e".getBytes(charset),
+                "List encoded not properly");
     }
 
     @Test
@@ -83,11 +84,11 @@ public class BencoderTest {
         dictionary.put("grass", "green");
         bencoder.encode(dictionary);
 
-        assertArrayEquals("Dictionary encoded not properly",
-                "d5:grass5:green4:lifei47ee".getBytes(), output.toByteArray());
+        assertEquals(output.toByteArray(), "d5:grass5:green4:lifei47ee".getBytes(),
+                "Dictionary encoded not properly");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void encodeInvalidList() throws IOException {
         bencoder.encode(Arrays.asList(new Object[]{47, 47.9, "space"}));
     }
@@ -100,8 +101,8 @@ public class BencoderTest {
         dictionary.put("anupper", -12);
         bencoder.encode(dictionary);
 
-        assertArrayEquals("Reversed dictionary encoded not properly",
-                "d7:anupperi-12e3:endi47e5:starti42ee".getBytes(), output.toByteArray());
+        assertEquals(output.toByteArray(), "d7:anupperi-12e3:endi47e5:starti42ee".getBytes(),
+                "Reversed dictionary encoded not properly");
     }
 
     @Test
@@ -115,9 +116,11 @@ public class BencoderTest {
         dictionary.put("sky", "grey");
         bencoder.encode(dictionary);
 
-        assertArrayEquals("Dictionary-based tree is not encoded properly",
+        assertEquals(
+                output.toByteArray(),
                 "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sky4:greye".getBytes(charset),
-                output.toByteArray());
+                "Dictionary-based tree is not encoded properly"
+        );
     }
 
     @Test
@@ -129,12 +132,11 @@ public class BencoderTest {
         List<Object> list = Arrays.asList(dictionary, 13);
         bencoder.encode(list);
 
-        assertArrayEquals("List-based tree is not encoded properly",
-                "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee".getBytes(),
-                output.toByteArray());
+        assertEquals(output.toByteArray(), "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee".getBytes(),
+                "List-based tree is not encoded properly");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void encodeInvalidDictionary() throws IOException {
         Map<String, Object> dictionary = new HashMap<>();
         dictionary.put("key", "value");

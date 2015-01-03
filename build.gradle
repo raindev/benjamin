@@ -10,7 +10,11 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'org.testng', name: 'testng', version:'6.8.13'
+}
+
+test {
+    useTestNG()
 }
 
 task wrapper(type: Wrapper) {
