@@ -7,5 +7,4 @@ sudo: false
 # Gradle caches
 cache:
   directories:
-    - $HOME/.gradle/caches
     - $HOME/.gradle/wrapper
