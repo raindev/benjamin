@@ -15,6 +15,18 @@ dependencies {
 
 test {
     useTestNG()
+
+    testLogging {
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                println "Results: " +
+                    "${result.testCount} tests," +
+                    " ${result.successfulTestCount} successful," +
+                    " ${result.failedTestCount} failed," +
+                    " ${result.skippedTestCount} skipped"
+            }
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
