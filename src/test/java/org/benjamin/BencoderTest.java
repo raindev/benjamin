@@ -27,9 +27,9 @@ public class BencoderTest {
 
     @Test
     public void encodeInteger() throws IOException {
-        bencoder.encode(47);
+        bencoder.encode(8589934592L); // bytes in 8Gb
 
-        assertEquals(output.toByteArray(), "i47e".getBytes(),
+        assertEquals(output.toByteArray(), "i8589934592e".getBytes(),
                 "Wrong integer encoding");
     }
 

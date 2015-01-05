@@ -38,12 +38,12 @@ public class Bencoder {
     /**
      * Encodes integer value to Bencode.
      *
-     * @param i integer to encode
+     * @param i integer number to encode
      * @throws IOException if an I/O error occurs
      */
-    public void encode(int i) throws IOException {
+    public void encode(long i) throws IOException {
 		outputStream.write(INTEGER_MARK);
-        outputStream.write(Integer.toString(i).getBytes());
+        outputStream.write(Long.toString(i).getBytes());
 		outputStream.write(END_MARK);
     }
 
