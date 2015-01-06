@@ -2,6 +2,7 @@ package org.benjamin;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,35 +26,37 @@ public class BencoderTest {
         bencoder = new Bencoder(charset, output);
     }
 
-    @Test
-    public void encodeInteger() throws IOException {
-        bencoder.encode(8589934592L); // bytes in 8Gb
+    @DataProvider
+    private Object[][] integers() {
+        return new Object[][] {
+            { 42         , "i42e"         },
+            { 8589934592L, "i8589934592e" }, // bytes in 8Gb
+            { -13        , "i-13e"        },
+            { 0          , "i0e"          }
+        };
+    }
 
-        assertEquals(output.toByteArray(), "i8589934592e".getBytes(),
+    @Test(dataProvider = "integers")
+    public void encodeInteger(long integer, String encodedInteger) throws IOException {
+        bencoder.encode(integer);
+
+        assertEquals(output.toByteArray(), encodedInteger.getBytes(),
                 "Wrong integer encoding");
     }
 
-    @Test
-    public void encodeNegativeInteger() throws IOException {
-        bencoder.encode(-13);
-
-        assertEquals(output.toByteArray(), "i-13e".getBytes(),
-                "Wrong negative integer encoding");
+    @DataProvider
+    private Object[][] strings() {
+        return new Object[][] {
+            { "hello world", "11:hello world" },
+            { "watermill⌘" , "10:watermill⌘"  }
+        };
     }
 
-    @Test
-    public void encodeZero() throws IOException {
-        bencoder.encode(0);
+    @Test(dataProvider = "strings")
+    public void encodeString(String string, String encodedString) throws IOException {
+        bencoder.encode(string);
 
-        assertEquals(output.toByteArray(), "i0e".getBytes(),
-                "Wrong zero encoding");
-    }
-
-    @Test
-    public void encodeString() throws IOException {
-        bencoder.encode("watermill⌘");
-
-        assertEquals(output.toByteArray(), "10:watermill⌘".getBytes(charset),
+        assertEquals(output.toByteArray(), encodedString.getBytes(charset),
                 "Wrong string encoding");
     }
 

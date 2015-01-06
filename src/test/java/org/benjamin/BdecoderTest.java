@@ -1,6 +1,7 @@
 package org.benjamin;
 
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,97 +23,78 @@ public class BdecoderTest {
     private static final String charset = "utf-8";
     private Bdecoder bdecoder;
 
-    @Test
-    public void decodeInteger() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("i47e"));
-
-        assertEquals(bdecoder.readInt(), 47,
-                "Integer is not decoded properly");
+    @DataProvider
+    private Object[][] integers() {
+        return new Object[][] {
+            { "i42e"     , 42             },
+            { "i0e"      , 0              },
+            { "i-47e"    , -47            },
+            { "i8589934592e", 8589934592L }, // bytes in 8Gb
+        };
     }
 
-    @Test
-    public void decodeZero() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("i0e"));
-
-        assertEquals(bdecoder.readInt(), 0,
-                "Zero is not decode properly");
+    @Test(dataProvider = "integers")
+    public void decodeInteger(String encodedInt, long decoded) throws IOException {
+        assertEquals(
+                new Bdecoder(charset, inputStream(encodedInt)).readInt(),
+                decoded,
+                "Integer is not decoded properly"
+        );
     }
 
-    @Test
-    public void decodeNegativeInteger() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("i-47e"));
-
-        assertEquals(bdecoder.readInt(), -47,
-                "Negative integer is not decoded properly");
+    @DataProvider
+    private Object[][] invalidIntegers() {
+        return new Object[][] {
+            { ""      }, // empty stream
+            { "n-47e" }, // invalid prefix
+            { "i47"   }  // no end mark
+        };
     }
 
-    @Test
-    public void decodeLongInteger() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("i2438987776e"));
-
-        assertEquals(bdecoder.readInt(), 2438987776L,
-                "Numbers larger than 32 bits should be handled");
+    @Test(dataProvider = "invalidIntegers",
+            expectedExceptions = IllegalStateException.class)
+    public void decodeInvalidInteger(String invalidInteger) throws IOException {
+        new Bdecoder(charset, inputStream(invalidInteger)).readInt();
     }
 
-    /**
-     * Negative zero disallowed in Bencode.
-     *
-     * @throws IOException is an I/O error occurs
-     */
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void negativeZero() throws IOException {
         bdecoder = new Bdecoder(charset, inputStream("i-0e"));
         bdecoder.readInt();
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void invalidIntegerPrefix() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("n-47e"));
-        bdecoder.readInt();
+    @DataProvider
+    private Object[][] strings() {
+        return new Object[][] {
+            { "3:sun"   , "sun"    },
+            { "7:smileΩ", "smileΩ" }, // Unicode string
+            { "0:"      , ""       }  // empty string
+        };
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void missingIntegerPostfix() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("i47"));
-        bdecoder.readInt();
+    @Test(dataProvider = "strings")
+    public void decodeString(String encodedString, String decoded) throws IOException {
+        assertEquals(
+                new Bdecoder(charset, inputStream(encodedString)).readString(),
+                decoded,
+                "String is not decoded properly"
+        );
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void emptyIntegerStream() throws IOException {
-        bdecoder = new Bdecoder(charset, new ByteArrayInputStream(new byte[]{}));
-        bdecoder.readInt();
+    @DataProvider
+    private Object[][] invalidStrings() {
+        return new Object[][] {
+            { "6:four" }, // too short string
+            { "4four"  }, // missing separator
+            { ":four"  }, // missing length
+            { ""       }, // empty stream
+        };
     }
 
-    @Test
-    public void decodeString() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("7:smileΩ"));
-
-        assertEquals(bdecoder.readString(), "smileΩ",
-                "String is not decoded properly");
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void tooShortString() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("6:four"));
-        bdecoder.readString();
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void missingStringSeparator() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("4four"));
-        bdecoder.readString();
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void missingStringLength() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream(":four"));
-        bdecoder.readString();
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void emptyStringStream() throws IOException {
-        bdecoder = new Bdecoder(charset, new ByteArrayInputStream(new byte[]{}));
-        bdecoder.readString();
+    @Test(dataProvider = "invalidStrings",
+            expectedExceptions = IllegalStateException.class)
+    public void decodeInvalidString(String invalidString) throws IOException {
+        new Bdecoder(charset, inputStream(invalidString)).readString();
     }
 
     @Test
@@ -124,111 +106,109 @@ public class BdecoderTest {
                 "Byte string is not decoded properly");
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void tooShortBytes() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("9:2532"));
-        bdecoder.readBytes();
+    @DataProvider
+    private Object[][] invalidBytes() {
+        return new Object[][] {
+            { "9:2532" }, // too short bytes
+            { "43331"  }, // missing separator
+            { ":82382" }, // missing length
+            { ""       }  // empty stream
+        };
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void missingBytesSeparator() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("43331"));
-        bdecoder.readBytes();
+    @Test(dataProvider = "invalidBytes",
+            expectedExceptions = IllegalStateException.class)
+    public void decodeInvalidBytes(String invalidBytes) throws IOException {
+        new Bdecoder(charset, inputStream(invalidBytes)).readBytes();
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void missingBytesLength() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream(":82382"));
-        bdecoder.readBytes();
+    @DataProvider
+    private Object[][] lists() {
+        return new Object[][] {
+            { "l4:lanei47ee", Arrays.asList( new Object[]{ "lane", 47L } ) },
+            {
+                "l2:coi47eli47ei42eed4:lifei42eee",
+                Arrays.asList(
+                    "co",
+                    47L,
+                    Arrays.asList(47L, 42L),
+                    new HashMap<String, Long>() {{
+                        put("life", 42L);
+                    }}
+                )
+            }
+        };
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void emptyBytesStream() throws IOException {
-        bdecoder = new Bdecoder(charset, new ByteArrayInputStream(new byte[]{}));
-        bdecoder.readBytes();
+    @Test(dataProvider = "lists")
+    public void decodeList(String encodedList, List<?> decoded) throws IOException {
+        assertEquals(
+                new Bdecoder(charset, inputStream(encodedList)).readList(),
+                decoded,
+                "List decoded not properly"
+        );
     }
 
-    @Test
-    public void decodeList() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("l4:lanei47ee"));
-
-        assertEquals(bdecoder.readList(), Arrays.asList(new Object[]{"lane", 47L}),
-                "List decoded not properly");
+    @DataProvider
+    private Object[][] invalidLists() {
+        return new Object[][] {
+            { "4:lanei47ee" }, // prefix missing
+            { "l4:lanei47e" }, // end mark missing
+            { ""            }  // empty stream
+        };
     }
 
-    @Test
-    public void decodeComplexList() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("l2:coi47eli47ei42eed4:lifei42eee"));
-
-        HashMap<String, Object> dictionary = new HashMap<>();
-        dictionary.put("life", 42L);
-        List<Object> list = Arrays.asList("co", 47L, Arrays.asList(47L, 42L), dictionary);
-
-        assertEquals(bdecoder.readList(), list,
-                "List-based tree is not decoded properly");
+    @Test(dataProvider = "invalidLists",
+            expectedExceptions = IllegalStateException.class)
+    public void decodeInvalidList(String invalidList) throws IOException {
+        new Bdecoder(charset, inputStream(invalidList)).readList();
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void listPrefixMissing() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("4:lanei47ee"));
-        bdecoder.readList();
+    @DataProvider
+    private Object[][] dictionaries() {
+        return new Object[][] {
+            {
+                "d3:key5:value3:sun5:grass1:ni5ee",
+                new HashMap<String, Object>() {{
+                    put("key", "value");
+                    put("n", 5L);
+                    put("sun", "grass");
+                }}
+            },
+            {
+                "d4:listl2:co4:worke10:dictionaryd3:key5:valueee",
+                new HashMap<String, Object>() {{
+                    put("list", Arrays.asList("co", "work"));
+                    put("dictionary", new HashMap<String, String>() {{
+                        put("key", "value");
+                    }});
+                }}
+            }
+        };
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void listPostfixMissing() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("l4:lanei47e"));
-        bdecoder.readList();
+    @Test(dataProvider = "dictionaries")
+    public void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
+        assertEquals(
+                new Bdecoder(charset, inputStream(encodedDictionary)).readDictionary(),
+                decoded,
+                "Dictionary decoded not properly"
+        );
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void listEmptyStream() throws IOException {
-        bdecoder = new Bdecoder(charset, new ByteArrayInputStream(new byte[]{}));
-        bdecoder.readList();
+    @DataProvider
+    private Object[][] invalidDictionaries() {
+        return new Object[][] {
+            { "3:key5:valueee" }, // missing prefix
+            { "d3:key5:value"  }, // end mark missing
+            { ""               }  // empty stream
+        };
     }
 
-    @Test
-    public void decodeDictionary() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("d3:key5:value3:sun5:grass1:ni5ee"));
-
-        Map<String, Object> dictionary = new HashMap<>();
-        dictionary.put("key", "value");
-        dictionary.put("n", 5L);
-        dictionary.put("sun", "grass");
-
-        assertEquals(bdecoder.readDictionary(), dictionary,
-                "Dictionary decoded not properly");
-    }
-
-    @Test
-    public void decodeComplexDictionary() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("d4:listl2:co4:worke6:stringd3:key5:valueee"));
-
-        Map<String, Object> dictionary = new HashMap<>();
-        dictionary.put("list", Arrays.asList("co", "work"));
-        Map<String, Object> innerDictionary = new HashMap<>();
-        innerDictionary.put("key", "value");
-        dictionary.put("string", innerDictionary);
-
-        assertEquals(bdecoder.readDictionary(), dictionary,
-                "Dictionary-based tree decoded not properly");
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void dictionaryPrefixMissing() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("3:key5:valuee"));
-        bdecoder.readDictionary();
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void dictionaryPostfixMissing() throws IOException {
-        bdecoder = new Bdecoder(charset, inputStream("d3:key5:value"));
-        bdecoder.readDictionary();
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void dictionaryEmptyStream() throws IOException {
-        bdecoder = new Bdecoder(charset, new ByteArrayInputStream(new byte[]{}));
-        bdecoder.readDictionary();
+    @Test(dataProvider = "invalidDictionaries",
+            expectedExceptions = IllegalStateException.class)
+    public void decodeInvalidDictionary(String invalidDictionary) throws IOException {
+        new Bdecoder(charset, inputStream(invalidDictionary)).readDictionary();
     }
 
     private InputStream inputStream(String s) {
