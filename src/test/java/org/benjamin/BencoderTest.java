@@ -72,23 +72,29 @@ public class BencoderTest {
                 "Byte strings should not be changed during encoding");
     }
 
-    @Test
-    public void encodeList() throws IOException {
-        bencoder.encode(Arrays.asList(new Object[]{47, "watermill⌘"}));
-
-        assertEquals(output.toByteArray(), "li47e10:watermill⌘e".getBytes(charset),
-                "List encoded not properly");
+    @DataProvider
+    private Object[][] lists() {
+        return new Object[][] {
+            { Arrays.asList(new Object[]{47, "watermill⌘"}), "li47e10:watermill⌘e" },
+            {
+                Arrays.asList(
+                        new HashMap<String, Object>() {{
+                            put("list", Arrays.asList("hello", "world", new byte[]{064, 067}));
+                            put("zero", 0);
+                        }},
+                        13
+                ),
+                "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee"
+            }
+        };
     }
 
-    @Test
-    public void encodeDictionary() throws IOException {
-        Map<String, Object> dictionary = new HashMap<>();
-        dictionary.put("life", 47);
-        dictionary.put("grass", "green");
-        bencoder.encode(dictionary);
+    @Test(dataProvider = "lists")
+    public void encodeList(List<Object> list, String encodedList) throws IOException {
+        bencoder.encode(list);
 
-        assertEquals(output.toByteArray(), "d5:grass5:green4:lifei47ee".getBytes(),
-                "Dictionary encoded not properly");
+        assertEquals(output.toByteArray(), encodedList.getBytes(charset),
+                "List encoded not properly");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -96,47 +102,45 @@ public class BencoderTest {
         bencoder.encode(Arrays.asList(new Object[]{47, 47.9, "space"}));
     }
 
-    @Test
-    public void dictionaryOrder() throws IOException {
-        Map<String, Object> dictionary = new LinkedHashMap<>();
-        dictionary.put("end", 47);
-        dictionary.put("start", 42);
-        dictionary.put("anupper", -12);
-        bencoder.encode(dictionary);
-
-        assertEquals(output.toByteArray(), "d7:anupperi-12e3:endi47e5:starti42ee".getBytes(),
-                "Reversed dictionary encoded not properly");
+    @DataProvider
+    private Object[][] dictionaries() {
+        return new Object[][] {
+            {
+                new HashMap<String, Object>() {{
+                    put("life", 47);
+                    put("grass", "green");
+                }},
+                "d5:grass5:green4:lifei47ee"
+            },
+            {
+                // enforce order reverse to expected in result
+                new LinkedHashMap<String, Object>() {{
+                    put("end", 47);
+                    put("start", 42);
+                    put("anupper", -12);
+                }},
+                "d7:anupperi-12e3:endi47e5:starti42ee"
+            },
+            {
+                new HashMap<String, Object>() {{
+                    put("life", 47);
+                    put("list", Arrays.asList("hello", "world", 0, -12));
+                    put("inner", new HashMap<String, String>() {{
+                        put("key", "value");
+                    }});
+                    put("sky", "grey");
+                }},
+                "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sky4:greye"
+            }
+        };
     }
 
-    @Test
-    public void encodeComplexDictionary() throws IOException {
-        Map<String, Object> dictionary = new HashMap<>();
-        dictionary.put("life", 47);
-        dictionary.put("list", Arrays.asList("hello", "world", 0, -12));
-        Map<String, Object> innerDictionary = new HashMap<>();
-        innerDictionary.put("key", "value");
-        dictionary.put("inner", innerDictionary);
-        dictionary.put("sky", "grey");
+    @Test(dataProvider = "dictionaries")
+    public void encodeDictionary(Map<String, Object> dictionary, String encodedDictionary) throws IOException {
         bencoder.encode(dictionary);
 
-        assertEquals(
-                output.toByteArray(),
-                "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sky4:greye".getBytes(charset),
-                "Dictionary-based tree is not encoded properly"
-        );
-    }
-
-    @Test
-    public void encodeComplexList() throws IOException {
-        Map<String, Object> dictionary = new HashMap<>();
-        //noinspection OctalInteger
-        dictionary.put("list", Arrays.asList("hello", "world", new byte[]{064, 067}));
-        dictionary.put("zero", 0);
-        List<Object> list = Arrays.asList(dictionary, 13);
-        bencoder.encode(list);
-
-        assertEquals(output.toByteArray(), "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee".getBytes(),
-                "List-based tree is not encoded properly");
+        assertEquals(output.toByteArray(), encodedDictionary.getBytes(),
+                "Dictionary encoded not properly");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
