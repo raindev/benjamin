@@ -1,8 +1,10 @@
 package org.benjamin;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,11 @@ public class Bdecoder {
 
     private final String charset;
     private final PushbackInputStream inputStream;
+
+    public Bdecoder(String charset, String bencodedString) throws UnsupportedEncodingException {
+        this(charset,
+                new ByteArrayInputStream(bencodedString.getBytes(charset)));
+    }
 
     /**
      * Creates encoder reading from {@code inputStream} using {@code charset} to decode
