@@ -4,6 +4,8 @@ import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ import static org.testng.Assert.assertEquals;
 @SuppressWarnings("SpellCheckingInspection")
 public class BdecoderTest {
 
-    private static final String charset = "utf-8";
+    private static final Charset charset = StandardCharsets.UTF_8;
     private Bdecoder bdecoder;
 
     @DataProvider

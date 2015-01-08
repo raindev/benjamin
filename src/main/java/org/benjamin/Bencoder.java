@@ -30,8 +30,8 @@ public class Bencoder {
      * @param charset      charset used to encode characters
      * @param outputStream stream to encode data to
      */
-    public Bencoder(String charset, OutputStream outputStream) {
-        this.charset = Charset.forName(charset);
+    public Bencoder(Charset charset, OutputStream outputStream) {
+        this.charset = charset;
         this.outputStream = outputStream;
     }
 

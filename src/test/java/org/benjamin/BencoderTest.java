@@ -6,6 +6,8 @@ import org.testng.annotations.DataProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.testng.Assert.assertEquals;
@@ -16,7 +18,7 @@ import static org.testng.Assert.assertEquals;
 @SuppressWarnings("SpellCheckingInspection")
 public class BencoderTest {
 
-    private static final String charset = "utf-8";
+    private static final Charset charset = StandardCharsets.UTF_8;
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Bencoder bencoder;
 

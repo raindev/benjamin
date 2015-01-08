@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +21,10 @@ public class Bdecoder {
     private static final char STRING_SPLIT = ':';
     private static final char END_MARK = 'e';
 
-    private final String charset;
+    private final Charset charset;
     private final PushbackInputStream inputStream;
 
-    public Bdecoder(String charset, String bencodedString) throws UnsupportedEncodingException {
+    public Bdecoder(Charset charset, String bencodedString) {
         this(charset,
                 new ByteArrayInputStream(bencodedString.getBytes(charset)));
     }
@@ -35,7 +36,7 @@ public class Bdecoder {
      * @param charset     charset used to decode {@code String}s
      * @param inputStream stream to decode data from
      */
-    public Bdecoder(String charset, InputStream inputStream) {
+    public Bdecoder(Charset charset, InputStream inputStream) {
         this.charset = charset;
         this.inputStream = new PushbackInputStream(inputStream);
     }
