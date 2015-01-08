@@ -152,4 +152,16 @@ public class BencoderTest {
         dictionary.put("oops!", 47.0);
         bencoder.encode(dictionary);
     }
+
+    @Test
+    public void chainedEncoding() throws IOException {
+        bencoder
+            .encode(5)
+            .encode("ello")
+            .encode(new byte[]{49, 50})
+            .encode(Arrays.<Object>asList(4, 3))
+            .encode(new HashMap<String, Object>(){{ put("k", "v"); }})
+            .encode(9);
+        assertEquals(output.toByteArray(), "i5e4:ello2:12li4ei3eed1:k1:vei9e".getBytes());
+    }
 }

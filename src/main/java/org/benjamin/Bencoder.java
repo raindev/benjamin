@@ -40,11 +40,13 @@ public class Bencoder {
      *
      * @param i integer number to encode
      * @throws IOException if an I/O error occurs
+     * @return this Bencoder instance
      */
-    public void encode(long i) throws IOException {
+    public Bencoder encode(long i) throws IOException {
 		outputStream.write(INTEGER_MARK);
         outputStream.write(Long.toString(i).getBytes());
 		outputStream.write(END_MARK);
+        return this;
     }
 
     /**
@@ -52,11 +54,13 @@ public class Bencoder {
      *
      * @param s string to encode
      * @throws IOException if an I/O error occurs
+     * @return this Bencoder instance
      */
-    public void encode(String s) throws IOException {
+    public Bencoder encode(String s) throws IOException {
 		outputStream.write(Integer.toString(s.length()).getBytes());
 		outputStream.write(STRING_SPLIT);
         outputStream.write(s.getBytes(charset));
+        return this;
     }
 
     /**
@@ -64,11 +68,13 @@ public class Bencoder {
      *
      * @param bytes bytes to encode
      * @throws IOException if an I/O error occurs
+     * @return this Bencoder instance
      */
-    public void encode(byte[] bytes) throws IOException {
+    public Bencoder encode(byte[] bytes) throws IOException {
         outputStream.write(Integer.toString(bytes.length).getBytes());
 		outputStream.write(STRING_SPLIT);
         outputStream.write(bytes);
+        return this;
     }
 
     /**
@@ -78,13 +84,15 @@ public class Bencoder {
      *
      * @param list list to encode
      * @throws IOException if an I/O error occurs
+     * @return this Bencoder instance
      */
-    public void encode(List<Object> list) throws IOException {
+    public Bencoder encode(List<Object> list) throws IOException {
         outputStream.write(LIST_MARK);
         for (Object object : list) {
             encodeObject(object);
         }
         outputStream.write(END_MARK);
+        return this;
     }
 
     /**
@@ -93,14 +101,16 @@ public class Bencoder {
      *
      * @param dictionary dictionary to encode represented as {@code Map}
      * @throws IOException if an I/O error occurs
+     * @return this Bencoder instance
      */
-    public void encode(Map<String, Object> dictionary) throws IOException {
+    public Bencoder encode(Map<String, Object> dictionary) throws IOException {
         outputStream.write(DICTIONARY_MARK);
         for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
         outputStream.write(END_MARK);
+        return this;
     }
 
     /**
