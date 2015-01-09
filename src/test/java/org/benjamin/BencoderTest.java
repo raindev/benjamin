@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -18,14 +19,13 @@ import static org.testng.Assert.assertEquals;
 @SuppressWarnings("SpellCheckingInspection")
 public class BencoderTest {
 
-    private static final Charset charset = StandardCharsets.UTF_8;
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Bencoder bencoder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         output = new ByteArrayOutputStream();
-        bencoder = new Bencoder(charset, output);
+        bencoder = new Bencoder(UTF_8, output);
     }
 
     @DataProvider
@@ -42,7 +42,7 @@ public class BencoderTest {
     public void encodeInteger(long integer, String encodedInteger) throws IOException {
         bencoder.encode(integer);
 
-        assertEquals(output.toByteArray(), encodedInteger.getBytes(),
+        assertEquals(output.toByteArray(), encodedInteger.getBytes(US_ASCII),
                 "Wrong integer encoding");
     }
 
@@ -58,7 +58,7 @@ public class BencoderTest {
     public void encodeString(String string, String encodedString) throws IOException {
         bencoder.encode(string);
 
-        assertEquals(output.toByteArray(), encodedString.getBytes(charset),
+        assertEquals(output.toByteArray(), encodedString.getBytes(UTF_8),
                 "Wrong string encoding");
     }
 
@@ -68,7 +68,7 @@ public class BencoderTest {
         bencoder.encode(bytes);
         byte[] encoded = output.toByteArray();
 
-        assertEquals(Arrays.copyOfRange(encoded, 0, 2), "4:".getBytes(),
+        assertEquals(Arrays.copyOfRange(encoded, 0, 2), "4:".getBytes(US_ASCII),
                 "Wrong byte string length marker");
         assertEquals(Arrays.copyOfRange(encoded, 2, encoded.length), bytes,
                 "Byte strings should not be changed during encoding");
@@ -95,7 +95,7 @@ public class BencoderTest {
     public void encodeList(List<Object> list, String encodedList) throws IOException {
         bencoder.encode(list);
 
-        assertEquals(output.toByteArray(), encodedList.getBytes(charset),
+        assertEquals(output.toByteArray(), encodedList.getBytes(UTF_8),
                 "List encoded not properly");
     }
 
@@ -130,9 +130,9 @@ public class BencoderTest {
                     put("inner", new HashMap<String, String>() {{
                         put("key", "value");
                     }});
-                    put("sky", "grey");
+                    put("sk❅", "grey");
                 }},
-                "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sky4:greye"
+                "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sk❅4:greye"
             }
         };
     }
@@ -141,7 +141,7 @@ public class BencoderTest {
     public void encodeDictionary(Map<String, Object> dictionary, String encodedDictionary) throws IOException {
         bencoder.encode(dictionary);
 
-        assertEquals(output.toByteArray(), encodedDictionary.getBytes(),
+        assertEquals(output.toByteArray(), encodedDictionary.getBytes(UTF_8),
                 "Dictionary encoded not properly");
     }
 
@@ -160,8 +160,8 @@ public class BencoderTest {
             .encode("ello")
             .encode(new byte[]{49, 50})
             .encode(Arrays.<Object>asList(4, 3))
-            .encode(new HashMap<String, Object>(){{ put("k", "v"); }})
+            .encode(new HashMap<String, Object>(){{ put("k", "Ω"); }})
             .encode(9);
-        assertEquals(output.toByteArray(), "i5e4:ello2:12li4ei3eed1:k1:vei9e".getBytes());
+        assertEquals(output.toByteArray(), "i5e4:ello2:12li4ei3eed1:k1:Ωei9e".getBytes(UTF_8));
     }
 }

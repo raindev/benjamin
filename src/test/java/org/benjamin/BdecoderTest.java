@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -19,7 +20,6 @@ import static org.testng.Assert.assertEquals;
 @SuppressWarnings("SpellCheckingInspection")
 public class BdecoderTest {
 
-    private static final Charset charset = StandardCharsets.UTF_8;
     private Bdecoder bdecoder;
 
     @DataProvider
@@ -35,7 +35,7 @@ public class BdecoderTest {
     @Test(dataProvider = "integers")
     public void decodeInteger(String encodedInt, long decoded) throws IOException {
         assertEquals(
-                new Bdecoder(charset, encodedInt).readInt(),
+                new Bdecoder(UTF_8, encodedInt).readInt(),
                 decoded,
                 "Integer is not decoded properly"
         );
@@ -53,12 +53,12 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidIntegers",
             expectedExceptions = IllegalStateException.class)
     public void decodeInvalidInteger(String invalidInteger) throws IOException {
-        new Bdecoder(charset, invalidInteger).readInt();
+        new Bdecoder(UTF_8, invalidInteger).readInt();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void negativeZero() throws IOException {
-        bdecoder = new Bdecoder(charset, "i-0e");
+        bdecoder = new Bdecoder(UTF_8, "i-0e");
         bdecoder.readInt();
     }
 
@@ -74,7 +74,7 @@ public class BdecoderTest {
     @Test(dataProvider = "strings")
     public void decodeString(String encodedString, String decoded) throws IOException {
         assertEquals(
-                new Bdecoder(charset, encodedString).readString(),
+                new Bdecoder(UTF_8, encodedString).readString(),
                 decoded,
                 "String is not decoded properly"
         );
@@ -93,12 +93,12 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidStrings",
             expectedExceptions = IllegalStateException.class)
     public void decodeInvalidString(String invalidString) throws IOException {
-        new Bdecoder(charset, invalidString).readString();
+        new Bdecoder(UTF_8, invalidString).readString();
     }
 
     @Test
     public void decodeBytes() throws IOException {
-        bdecoder = new Bdecoder(charset, "4:2397");
+        bdecoder = new Bdecoder(UTF_8, "4:2397");
 
         //noinspection OctalInteger
         assertEquals(bdecoder.readBytes(), new byte[]{062, 063, 071, 067},
@@ -118,7 +118,7 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidBytes",
             expectedExceptions = IllegalStateException.class)
     public void decodeInvalidBytes(String invalidBytes) throws IOException {
-        new Bdecoder(charset, invalidBytes).readBytes();
+        new Bdecoder(UTF_8, invalidBytes).readBytes();
     }
 
     @DataProvider
@@ -142,7 +142,7 @@ public class BdecoderTest {
     @Test(dataProvider = "lists")
     public void decodeList(String encodedList, List<?> decoded) throws IOException {
         assertEquals(
-                new Bdecoder(charset, encodedList).readList(),
+                new Bdecoder(UTF_8, encodedList).readList(),
                 decoded,
                 "List decoded not properly"
         );
@@ -160,7 +160,7 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidLists",
             expectedExceptions = IllegalStateException.class)
     public void decodeInvalidList(String invalidList) throws IOException {
-        new Bdecoder(charset, invalidList).readList();
+        new Bdecoder(UTF_8, invalidList).readList();
     }
 
     @DataProvider
@@ -189,7 +189,7 @@ public class BdecoderTest {
     @Test(dataProvider = "dictionaries")
     public void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
         assertEquals(
-                new Bdecoder(charset, encodedDictionary).readDictionary(),
+                new Bdecoder(UTF_8, encodedDictionary).readDictionary(),
                 decoded,
                 "Dictionary decoded not properly"
         );
@@ -207,6 +207,6 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidDictionaries",
             expectedExceptions = IllegalStateException.class)
     public void decodeInvalidDictionary(String invalidDictionary) throws IOException {
-        new Bdecoder(charset, invalidDictionary).readDictionary();
+        new Bdecoder(UTF_8, invalidDictionary).readDictionary();
     }
 }

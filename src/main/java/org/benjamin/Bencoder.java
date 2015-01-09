@@ -7,19 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static java.nio.charset.StandardCharsets.*;
+
 /**
  * Bencode data encoder.
  */
 public class Bencoder {
 
-	private static final byte[] INTEGER_MARK = "i".getBytes();
-	private static final byte[] LIST_MARK = "l".getBytes();
-	private static final byte[] DICTIONARY_MARK = "d".getBytes();
-	private static final byte[] STRING_SPLIT = ":".getBytes();
-	private static final byte[] END_MARK = "e".getBytes();
+	private static final byte[] INTEGER_MARK = "i".getBytes(US_ASCII);
+	private static final byte[] LIST_MARK = "l".getBytes(US_ASCII);
+	private static final byte[] DICTIONARY_MARK = "d".getBytes(US_ASCII);
+	private static final byte[] STRING_SPLIT = ":".getBytes(US_ASCII);
+	private static final byte[] END_MARK = "e".getBytes(US_ASCII);
 
     /**
      * Used to encode character data.
+     * Bencode markers and numbers are ASCII-encoded.
      */
     private final Charset charset;
     private final OutputStream outputStream;
@@ -44,7 +47,7 @@ public class Bencoder {
      */
     public Bencoder encode(long i) throws IOException {
 		outputStream.write(INTEGER_MARK);
-        outputStream.write(Long.toString(i).getBytes());
+        outputStream.write(Long.toString(i).getBytes(US_ASCII));
 		outputStream.write(END_MARK);
         return this;
     }
@@ -57,7 +60,7 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(String s) throws IOException {
-		outputStream.write(Integer.toString(s.length()).getBytes());
+		outputStream.write(Integer.toString(s.length()).getBytes(US_ASCII));
 		outputStream.write(STRING_SPLIT);
         outputStream.write(s.getBytes(charset));
         return this;
@@ -71,7 +74,7 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(byte[] bytes) throws IOException {
-        outputStream.write(Integer.toString(bytes.length).getBytes());
+        outputStream.write(Integer.toString(bytes.length).getBytes(US_ASCII));
 		outputStream.write(STRING_SPLIT);
         outputStream.write(bytes);
         return this;
