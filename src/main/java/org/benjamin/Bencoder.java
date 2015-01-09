@@ -14,11 +14,12 @@ import static java.nio.charset.StandardCharsets.*;
  */
 public class Bencoder {
 
-	private static final byte[] INTEGER_MARK = "i".getBytes(US_ASCII);
-	private static final byte[] LIST_MARK = "l".getBytes(US_ASCII);
-	private static final byte[] DICTIONARY_MARK = "d".getBytes(US_ASCII);
-	private static final byte[] STRING_SPLIT = ":".getBytes(US_ASCII);
-	private static final byte[] END_MARK = "e".getBytes(US_ASCII);
+    // All the markers are in ASCII range hence safe to convert via casting
+	private static final char INTEGER_MARK = 'i';
+	private static final char LIST_MARK = 'l';
+	private static final char DICTIONARY_MARK = 'd';
+	private static final char STRING_SPLIT = ':';
+	private static final char END_MARK = 'e';
 
     /**
      * Used to encode character data.
@@ -47,7 +48,7 @@ public class Bencoder {
      */
     public Bencoder encode(long i) throws IOException {
 		outputStream.write(INTEGER_MARK);
-        outputStream.write(Long.toString(i).getBytes(US_ASCII));
+        outputStream.write(toAsciiString(i));
 		outputStream.write(END_MARK);
         return this;
     }
@@ -60,7 +61,7 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(String s) throws IOException {
-		outputStream.write(Integer.toString(s.length()).getBytes(US_ASCII));
+		outputStream.write(toAsciiString(s.length()));
 		outputStream.write(STRING_SPLIT);
         outputStream.write(s.getBytes(charset));
         return this;
@@ -74,10 +75,14 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(byte[] bytes) throws IOException {
-        outputStream.write(Integer.toString(bytes.length).getBytes(US_ASCII));
+        outputStream.write(toAsciiString(bytes.length));
 		outputStream.write(STRING_SPLIT);
         outputStream.write(bytes);
         return this;
+    }
+
+    private byte[] toAsciiString(Number number) {
+        return String.valueOf(number).getBytes(US_ASCII);
     }
 
     /**
