@@ -6,10 +6,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Bencode data decoder.
@@ -130,17 +127,18 @@ public class Bdecoder {
 
     /**
      * Decodes dictionary from the stream.
+     * Accordingly to the Bencode specification, dictionary keys are sorted as raw strings.
      *
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public Map<String, Object> readDictionary() throws IOException {
+    public SortedMap<String, Object> readDictionary() throws IOException {
         int chr;
         if ((chr = inputStream.read()) != DICTIONARY_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'd' or end of stream reached: "
                     + (char) chr);
         }
-        Map<String, Object> dictionary = new HashMap<>();
+        SortedMap<String, Object> dictionary = new TreeMap<>();
         while ((chr = inputStream.read()) != END_MARK) {
             if (chr == -1) {
                 throw new IllegalStateException("End of stream was reached prematurely");
