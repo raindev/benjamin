@@ -50,7 +50,8 @@ public class BencoderTest {
     private Object[][] strings() {
         return new Object[][] {
             { "hello world", "11:hello world" },
-            { "watermill⌘" , "10:watermill⌘"  }
+            { "watermill⌘" , "10:watermill⌘"  },
+            { ""           , "0:"             }
         };
     }
 
@@ -77,6 +78,7 @@ public class BencoderTest {
     @DataProvider
     private Object[][] lists() {
         return new Object[][] {
+            { Collections.emptyList()                      , "le"                  },
             { Arrays.asList(new Object[]{47, "watermill⌘"}), "li47e10:watermill⌘e" },
             {
                 Arrays.asList(
@@ -107,6 +109,7 @@ public class BencoderTest {
     @DataProvider
     private Object[][] dictionaries() {
         return new Object[][] {
+            { Collections.emptyMap(), "de" },
             {
                 new HashMap<String, Object>() {{
                     put("life", 47);

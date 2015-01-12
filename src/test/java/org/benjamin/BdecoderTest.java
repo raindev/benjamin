@@ -6,10 +6,7 @@ import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
@@ -65,9 +62,11 @@ public class BdecoderTest {
     @DataProvider
     private Object[][] strings() {
         return new Object[][] {
-            { "3:sun"   , "sun"    },
-            { "7:smileΩ", "smileΩ" }, // Unicode string
-            { "0:"      , ""       }  // empty string
+            { "3:sun"         , "sun"         },
+            { "7:smileΩ"      , "smileΩ"      }, // Unicode string
+            { "0:"            , ""            }, // empty string
+            // strings containing separators aren't encoded in any special way
+            { "11::in:the:sky", ":in:the:sky" }
         };
     }
 
@@ -124,6 +123,7 @@ public class BdecoderTest {
     @DataProvider
     private Object[][] lists() {
         return new Object[][] {
+            { "le"          , Collections.emptyList()                      },
             { "l4:lanei47ee", Arrays.asList( new Object[]{ "lane", 47L } ) },
             {
                 "l2:coi47eli47ei42eed4:lifei42eee",
@@ -166,6 +166,7 @@ public class BdecoderTest {
     @DataProvider
     private Object[][] dictionaries() {
         return new Object[][] {
+            { "de", Collections.emptyMap() },
             {
                 "d3:key5:value3:sun5:grass1:ni5ee",
                 new HashMap<String, Object>() {{
