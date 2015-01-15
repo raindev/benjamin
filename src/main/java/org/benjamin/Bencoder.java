@@ -8,18 +8,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static java.nio.charset.StandardCharsets.*;
+import static org.benjamin.Bencode.*;
 
 /**
  * Bencode data encoder.
  */
 public class Bencoder {
-
-    // All the markers are in ASCII range hence safe to convert via casting
-    private static final char INTEGER_MARK = 'i';
-    private static final char LIST_MARK = 'l';
-    private static final char DICTIONARY_MARK = 'd';
-    private static final char STRING_SPLIT = ':';
-    private static final char END_MARK = 'e';
 
     /**
      * Used to encode character data.

@@ -8,16 +8,12 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static org.benjamin.Bencode.*;
+
 /**
  * Bencode data decoder.
  */
 public class Bdecoder {
-    private static final char INTEGER_MARK = 'i';
-    private static final char LIST_MARK = 'l';
-    private static final char DICTIONARY_MARK = 'd';
-    private static final char STRING_SPLIT = ':';
-    private static final char END_MARK = 'e';
-
     private final Charset charset;
     private final PushbackInputStream inputStream;
 
