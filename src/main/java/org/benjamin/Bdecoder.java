@@ -104,7 +104,7 @@ public class Bdecoder {
      * @return list of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public List<Object> readList() throws IOException {
+    public List<?> readList() throws IOException {
         int chr;
         if ((chr = inputStream.read()) != LIST_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'l' or end of stream reached: "
@@ -128,7 +128,7 @@ public class Bdecoder {
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public SortedMap<String, Object> readDictionary() throws IOException {
+    public SortedMap<String, ?> readDictionary() throws IOException {
         int chr;
         if ((chr = inputStream.read()) != DICTIONARY_MARK) {
             throw new IllegalStateException("Unexpected character occurred instead of 'd' or end of stream reached: "

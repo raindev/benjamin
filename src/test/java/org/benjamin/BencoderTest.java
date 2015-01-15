@@ -87,7 +87,7 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "lists")
-    void encodeList(List<Object> list, String encodedList) throws IOException {
+    void encodeList(List<?> list, String encodedList) throws IOException {
         bencoder.encode(list);
 
         assertEquals(output.toByteArray(), encodedList.getBytes(UTF_8));
@@ -133,7 +133,7 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "dictionaries")
-    void encodeDictionary(Map<String, Object> dictionary, String encodedDictionary) throws IOException {
+    void encodeDictionary(Map<String, ?> dictionary, String encodedDictionary) throws IOException {
         bencoder.encode(dictionary);
 
         assertEquals(output.toByteArray(), encodedDictionary.getBytes(UTF_8));

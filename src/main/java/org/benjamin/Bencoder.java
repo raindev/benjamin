@@ -88,7 +88,7 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(List<Object> list) throws IOException {
+    public Bencoder encode(List<?> list) throws IOException {
         outputStream.write(LIST_MARK);
         for (Object object : list) {
             encodeObject(object);
@@ -105,7 +105,7 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(Map<String, Object> dictionary) throws IOException {
+    public Bencoder encode(Map<String, ?> dictionary) throws IOException {
         outputStream.write(DICTIONARY_MARK);
         for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
