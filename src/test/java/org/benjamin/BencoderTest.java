@@ -6,30 +6,25 @@ import org.testng.annotations.DataProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 
-/**
- * Test for {@link Bencoder}
- */
-@SuppressWarnings("SpellCheckingInspection")
+@Test
 public class BencoderTest {
 
-    private ByteArrayOutputStream output = new ByteArrayOutputStream();
-    private Bencoder bencoder;
+    ByteArrayOutputStream output;
+    Bencoder bencoder;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    void setUp() {
         output = new ByteArrayOutputStream();
         bencoder = new Bencoder(UTF_8, output);
     }
 
     @DataProvider
-    private Object[][] integers() {
+    Object[][] integers() {
         return new Object[][] {
             { 42         , "i42e"         },
             { 8589934592L, "i8589934592e" }, // bytes in 8Gb
@@ -39,15 +34,14 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "integers")
-    public void encodeInteger(long integer, String encodedInteger) throws IOException {
+    void encodeInteger(long integer, String encodedInteger) throws IOException {
         bencoder.encode(integer);
 
-        assertEquals(output.toByteArray(), encodedInteger.getBytes(US_ASCII),
-                "Wrong integer encoding");
+        assertEquals(output.toByteArray(), encodedInteger.getBytes(US_ASCII));
     }
 
     @DataProvider
-    private Object[][] strings() {
+    Object[][] strings() {
         return new Object[][] {
             { "hello world", "11:hello world" },
             { "watermill⌘" , "10:watermill⌘"  },
@@ -56,19 +50,18 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "strings")
-    public void encodeString(String string, String encodedString) throws IOException {
+    void encodeString(String string, String encodedString) throws IOException {
         bencoder.encode(string);
 
-        assertEquals(output.toByteArray(), encodedString.getBytes(UTF_8),
-                "Wrong string encoding");
+        assertEquals(output.toByteArray(), encodedString.getBytes(UTF_8));
     }
 
     @Test
-    public void encodeBytes() throws IOException {
+    void encodeBytes() throws IOException {
         byte[] bytes = new byte[]{(byte) 0x65, (byte) 0x10, (byte) 0xf3, (byte) 0x29};
         bencoder.encode(bytes);
-        byte[] encoded = output.toByteArray();
 
+        byte[] encoded = output.toByteArray();
         assertEquals(Arrays.copyOfRange(encoded, 0, 2), "4:".getBytes(US_ASCII),
                 "Wrong byte string length marker");
         assertEquals(Arrays.copyOfRange(encoded, 2, encoded.length), bytes,
@@ -76,7 +69,7 @@ public class BencoderTest {
     }
 
     @DataProvider
-    private Object[][] lists() {
+    Object[][] lists() {
         return new Object[][] {
             { Collections.emptyList()                      , "le"                  },
             { Arrays.asList(new Object[]{47, "watermill⌘"}), "li47e10:watermill⌘e" },
@@ -94,20 +87,19 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "lists")
-    public void encodeList(List<Object> list, String encodedList) throws IOException {
+    void encodeList(List<Object> list, String encodedList) throws IOException {
         bencoder.encode(list);
 
-        assertEquals(output.toByteArray(), encodedList.getBytes(UTF_8),
-                "List encoded not properly");
+        assertEquals(output.toByteArray(), encodedList.getBytes(UTF_8));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void encodeInvalidList() throws IOException {
+    void encodeInvalidList() throws IOException {
         bencoder.encode(Arrays.asList(new Object[]{47, 47.9, "space"}));
     }
 
     @DataProvider
-    private Object[][] dictionaries() {
+    Object[][] dictionaries() {
         return new Object[][] {
             { Collections.emptyMap(), "de" },
             {
@@ -141,15 +133,14 @@ public class BencoderTest {
     }
 
     @Test(dataProvider = "dictionaries")
-    public void encodeDictionary(Map<String, Object> dictionary, String encodedDictionary) throws IOException {
+    void encodeDictionary(Map<String, Object> dictionary, String encodedDictionary) throws IOException {
         bencoder.encode(dictionary);
 
-        assertEquals(output.toByteArray(), encodedDictionary.getBytes(UTF_8),
-                "Dictionary encoded not properly");
+        assertEquals(output.toByteArray(), encodedDictionary.getBytes(UTF_8));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void encodeInvalidDictionary() throws IOException {
+    void encodeInvalidDictionary() throws IOException {
         Map<String, Object> dictionary = new HashMap<>();
         dictionary.put("key", "value");
         dictionary.put("oops!", 47.0);
@@ -157,7 +148,7 @@ public class BencoderTest {
     }
 
     @Test
-    public void chainedEncoding() throws IOException {
+    void chainedEncoding() throws IOException {
         bencoder
             .encode(5)
             .encode("ello")

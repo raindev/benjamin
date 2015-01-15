@@ -4,23 +4,18 @@ import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 
-/**
- * Test for {@code Bdecoder}.
- */
-@SuppressWarnings("SpellCheckingInspection")
+@Test
 public class BdecoderTest {
 
-    private Bdecoder bdecoder;
+    Bdecoder bdecoder;
 
     @DataProvider
-    private Object[][] integers() {
+    Object[][] integers() {
         return new Object[][] {
             { "i42e"     , 42             },
             { "i0e"      , 0              },
@@ -30,16 +25,12 @@ public class BdecoderTest {
     }
 
     @Test(dataProvider = "integers")
-    public void decodeInteger(String encodedInt, long decoded) throws IOException {
-        assertEquals(
-                new Bdecoder(UTF_8, encodedInt).readInt(),
-                decoded,
-                "Integer is not decoded properly"
-        );
+    void decodeInteger(String encodedInt, long decoded) throws IOException {
+        assertEquals( new Bdecoder(UTF_8, encodedInt).readInt(), decoded);
     }
 
     @DataProvider
-    private Object[][] invalidIntegers() {
+    Object[][] invalidIntegers() {
         return new Object[][] {
             { ""      }, // empty stream
             { "n-47e" }, // invalid prefix
@@ -47,20 +38,18 @@ public class BdecoderTest {
         };
     }
 
-    @Test(dataProvider = "invalidIntegers",
-            expectedExceptions = IllegalStateException.class)
-    public void decodeInvalidInteger(String invalidInteger) throws IOException {
+    @Test(dataProvider = "invalidIntegers", expectedExceptions = IllegalStateException.class)
+    void decodeInvalidInteger(String invalidInteger) throws IOException {
         new Bdecoder(UTF_8, invalidInteger).readInt();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void negativeZero() throws IOException {
-        bdecoder = new Bdecoder(UTF_8, "i-0e");
-        bdecoder.readInt();
+    void negativeZero() throws IOException {
+        new Bdecoder(UTF_8, "i-0e").readInt();
     }
 
     @DataProvider
-    private Object[][] strings() {
+    Object[][] strings() {
         return new Object[][] {
             { "3:sun"         , "sun"         },
             { "7:smileΩ"      , "smileΩ"      }, // Unicode string
@@ -71,16 +60,12 @@ public class BdecoderTest {
     }
 
     @Test(dataProvider = "strings")
-    public void decodeString(String encodedString, String decoded) throws IOException {
-        assertEquals(
-                new Bdecoder(UTF_8, encodedString).readString(),
-                decoded,
-                "String is not decoded properly"
-        );
+    void decodeString(String encodedString, String decoded) throws IOException {
+        assertEquals( new Bdecoder(UTF_8, encodedString).readString(), decoded);
     }
 
     @DataProvider
-    private Object[][] invalidStrings() {
+    Object[][] invalidStrings() {
         return new Object[][] {
             { "6:four" }, // too short string
             { "4four"  }, // missing separator
@@ -89,23 +74,20 @@ public class BdecoderTest {
         };
     }
 
-    @Test(dataProvider = "invalidStrings",
-            expectedExceptions = IllegalStateException.class)
-    public void decodeInvalidString(String invalidString) throws IOException {
+    @Test(dataProvider = "invalidStrings", expectedExceptions = IllegalStateException.class)
+    void decodeInvalidString(String invalidString) throws IOException {
         new Bdecoder(UTF_8, invalidString).readString();
     }
 
     @Test
-    public void decodeBytes() throws IOException {
+    void decodeBytes() throws IOException {
         bdecoder = new Bdecoder(UTF_8, "4:2397");
 
-        //noinspection OctalInteger
-        assertEquals(bdecoder.readBytes(), new byte[]{062, 063, 071, 067},
-                "Byte string is not decoded properly");
+        assertEquals(bdecoder.readBytes(), new byte[]{062, 063, 071, 067});
     }
 
     @DataProvider
-    private Object[][] invalidBytes() {
+    Object[][] invalidBytes() {
         return new Object[][] {
             { "9:2532" }, // too short bytes
             { "43331"  }, // missing separator
@@ -114,14 +96,13 @@ public class BdecoderTest {
         };
     }
 
-    @Test(dataProvider = "invalidBytes",
-            expectedExceptions = IllegalStateException.class)
-    public void decodeInvalidBytes(String invalidBytes) throws IOException {
+    @Test(dataProvider = "invalidBytes", expectedExceptions = IllegalStateException.class)
+    void decodeInvalidBytes(String invalidBytes) throws IOException {
         new Bdecoder(UTF_8, invalidBytes).readBytes();
     }
 
     @DataProvider
-    private Object[][] lists() {
+    Object[][] lists() {
         return new Object[][] {
             { "le"          , Collections.emptyList()                      },
             { "l4:lanei47ee", Arrays.asList( new Object[]{ "lane", 47L } ) },
@@ -140,16 +121,12 @@ public class BdecoderTest {
     }
 
     @Test(dataProvider = "lists")
-    public void decodeList(String encodedList, List<?> decoded) throws IOException {
-        assertEquals(
-                new Bdecoder(UTF_8, encodedList).readList(),
-                decoded,
-                "List decoded not properly"
-        );
+    void decodeList(String encodedList, List<?> decoded) throws IOException {
+        assertEquals( new Bdecoder(UTF_8, encodedList).readList(), decoded);
     }
 
     @DataProvider
-    private Object[][] invalidLists() {
+    Object[][] invalidLists() {
         return new Object[][] {
             { "4:lanei47ee" }, // prefix missing
             { "l4:lanei47e" }, // end mark missing
@@ -159,12 +136,12 @@ public class BdecoderTest {
 
     @Test(dataProvider = "invalidLists",
             expectedExceptions = IllegalStateException.class)
-    public void decodeInvalidList(String invalidList) throws IOException {
+    void decodeInvalidList(String invalidList) throws IOException {
         new Bdecoder(UTF_8, invalidList).readList();
     }
 
     @DataProvider
-    private Object[][] dictionaries() {
+    Object[][] dictionaries() {
         return new Object[][] {
             { "de", Collections.emptyMap() },
             {
@@ -188,16 +165,12 @@ public class BdecoderTest {
     }
 
     @Test(dataProvider = "dictionaries")
-    public void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
-        assertEquals(
-                new Bdecoder(UTF_8, encodedDictionary).readDictionary(),
-                decoded,
-                "Dictionary decoded not properly"
-        );
+    void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
+        assertEquals( new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
     }
 
     @DataProvider
-    private Object[][] invalidDictionaries() {
+    Object[][] invalidDictionaries() {
         return new Object[][] {
             { "3:key5:valueee" }, // missing prefix
             { "d3:key5:value"  }, // end mark missing
@@ -205,9 +178,8 @@ public class BdecoderTest {
         };
     }
 
-    @Test(dataProvider = "invalidDictionaries",
-            expectedExceptions = IllegalStateException.class)
-    public void decodeInvalidDictionary(String invalidDictionary) throws IOException {
+    @Test(dataProvider = "invalidDictionaries", expectedExceptions = IllegalStateException.class)
+    void decodeInvalidDictionary(String invalidDictionary) throws IOException {
         new Bdecoder(UTF_8, invalidDictionary).readDictionary();
     }
 }
