@@ -57,7 +57,7 @@ public class Bdecoder {
         if (numberString.equals("-0")) {
             throw new IllegalArgumentException("Negative zero is not valid number");
         }
-        return Long.valueOf(numberString);
+        return Long.parseLong(numberString);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Bdecoder {
         }
         int length;
         try {
-            length = Integer.valueOf(lengthString.toString());
+            length = Integer.parseInt(lengthString.toString());
         } catch (NumberFormatException e) {
             throw new IllegalStateException("Length specifier was expected");
         }

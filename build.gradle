@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'findbugs'
 
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
@@ -29,6 +30,19 @@ test {
     }
 }
 
+findbugs {
+    toolVersion = "3.0.0"
+    effort = "max"
+    reportLevel = "high"
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
