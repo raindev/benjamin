@@ -37,6 +37,13 @@ findbugs {
     reportLevel = "high"
 }
 
+pmd {
+    toolVersion = "5.1.3"
+    ruleSets = [
+        "java-basic",
+        "java-braces"    ]
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
