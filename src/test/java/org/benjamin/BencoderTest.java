@@ -69,6 +69,7 @@ public class BencoderTest {
     }
 
     @DataProvider
+    @SuppressWarnings("PMD.AvoidUsingOctalValues")
     Object[][] lists() {
         return new Object[][] {
             { Collections.emptyList()                      , "le"                  },

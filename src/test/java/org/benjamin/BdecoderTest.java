@@ -80,6 +80,7 @@ public class BdecoderTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.AvoidUsingOctalValues")
     void decodeBytes() throws IOException {
         bdecoder = new Bdecoder(UTF_8, "4:2397");
 
