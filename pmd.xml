@@ -9,6 +9,11 @@
   <rule ref="rulesets/java/basic.xml"/>
   <rule ref="rulesets/java/braces.xml"/>
   <rule ref="rulesets/java/codesize.xml"/>
+  <rule ref="rulesets/java/design.xml">
+    <!-- They are really handy for in-place map construction in test -->
+    <exclude name="NonStaticInitializer"/>
+  </rule>
+  <rule ref="rulesets/java/empty.xml"/>
   <rule ref="rulesets/java/imports.xml"/>
   <rule ref="rulesets/java/naming.xml"/>
   <rule ref="rulesets/java/strictexception.xml"/>

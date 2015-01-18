@@ -70,7 +70,7 @@ public class Bdecoder {
         try {
             length = Integer.parseInt(readUntil(':').toString());
         } catch (NumberFormatException e) {
-            throw new IllegalStateException("Length specifier was expected");
+            throw new IllegalStateException("String length specifier was expected", e);
         }
         final byte[] byteString = new byte[length];
         if (inputStream.read(byteString) != length) {
