@@ -35,22 +35,16 @@ public class BdecoderTest {
             { ""      }, // empty stream
             { "n-47e" }, // invalid prefix
             { "i47"   }, // no end mark
-            { "i09e"  }  // zero padding
+            { "i09e"  }, // zero padding
+            // Bencode specification says that only significant digits should be used
+            // in integers and explicitly states that negative zero is prohibited
+            { "i-0e"  }
         };
     }
 
     @Test(dataProvider = "invalidIntegers", expectedExceptions = IllegalStateException.class)
     void decodeInvalidInteger(String invalidInteger) throws IOException {
         new Bdecoder(UTF_8, invalidInteger).readInt();
-    }
-
-    /**
-     * Bencode documentation says that only significant digits should be used
-     * in integers and explicitly states that negative zero is prohibited
-     */
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    void negativeZero() throws IOException {
-        new Bdecoder(UTF_8, "i-0e").readInt();
     }
 
     @DataProvider
