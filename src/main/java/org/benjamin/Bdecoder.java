@@ -53,6 +53,9 @@ public class Bdecoder {
             }
             number.append((char) chr);
         }
+        if (number.charAt(0) == '0' && number.length() != 1) {
+            throw new IllegalStateException("Zero padded integers aren't allowed");
+        }
         String numberString = number.toString();
         if (numberString.equals("-0")) {
             throw new IllegalArgumentException("Negative zero is not valid number");

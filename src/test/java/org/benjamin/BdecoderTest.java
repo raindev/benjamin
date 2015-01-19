@@ -34,7 +34,8 @@ public class BdecoderTest {
         return new Object[][] {
             { ""      }, // empty stream
             { "n-47e" }, // invalid prefix
-            { "i47"   }  // no end mark
+            { "i47"   }, // no end mark
+            { "i09e"  }  // zero padding
         };
     }
 
