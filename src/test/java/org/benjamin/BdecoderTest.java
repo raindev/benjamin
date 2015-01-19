@@ -43,6 +43,10 @@ public class BdecoderTest {
         new Bdecoder(UTF_8, invalidInteger).readInt();
     }
 
+    /**
+     * Bencode documentation says that only significant digits should be used
+     * in integers and explicitly states that negative zero is prohibited
+     */
     @Test(expectedExceptions = IllegalArgumentException.class)
     void negativeZero() throws IOException {
         new Bdecoder(UTF_8, "i-0e").readInt();
