@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static java.nio.charset.StandardCharsets.*;
-import static org.benjamin.Bencode.*;
 
 /**
  * Bencode data encoder.
@@ -41,9 +40,9 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(long i) throws IOException {
-        outputStream.write(INTEGER_MARK);
+        outputStream.write('i');
         outputStream.write(toAsciiString(i));
-        outputStream.write(END_MARK);
+        outputStream.write('e');
         return this;
     }
 
@@ -56,7 +55,7 @@ public class Bencoder {
      */
     public Bencoder encode(String s) throws IOException {
         outputStream.write(toAsciiString(s.length()));
-        outputStream.write(STRING_SPLIT);
+        outputStream.write(':');
         outputStream.write(s.getBytes(charset));
         return this;
     }
@@ -70,7 +69,7 @@ public class Bencoder {
      */
     public Bencoder encode(byte[] bytes) throws IOException {
         outputStream.write(toAsciiString(bytes.length));
-        outputStream.write(STRING_SPLIT);
+        outputStream.write(':');
         outputStream.write(bytes);
         return this;
     }
@@ -89,11 +88,11 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(List<?> list) throws IOException {
-        outputStream.write(LIST_MARK);
+        outputStream.write('l');
         for (Object object : list) {
             encodeObject(object);
         }
-        outputStream.write(END_MARK);
+        outputStream.write('e');
         return this;
     }
 
@@ -106,12 +105,12 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(Map<String, ?> dictionary) throws IOException {
-        outputStream.write(DICTIONARY_MARK);
+        outputStream.write('d');
         for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
-        outputStream.write(END_MARK);
+        outputStream.write('e');
         return this;
     }
 
