@@ -102,6 +102,8 @@ public class Bdecoder {
 
     /**
      * Decodes list from the stream.
+     * All the strings within a list will be decoded as Strings of the specified encoding,
+     * as opposed to raw byte arrays.
      *
      * @return list of decoded values
      * @throws IOException if an I/O error occurs
@@ -126,6 +128,8 @@ public class Bdecoder {
     /**
      * Decodes dictionary from the stream.
      * Accordingly to the Bencode specification, dictionary keys are sorted as raw strings.
+     * All the strings values in a dictionary will be decoded as Strings of the specified
+     * encoding, as opposed to raw byte arrays.
      *
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
