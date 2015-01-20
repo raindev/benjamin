@@ -69,7 +69,6 @@ public class BencoderTest {
     }
 
     @DataProvider
-    @SuppressWarnings("PMD.AvoidUsingOctalValues")
     Object[][] lists() {
         return new Object[][] {
             { Collections.emptyList()                      , "le"                  },
@@ -77,7 +76,7 @@ public class BencoderTest {
             {
                 Arrays.asList(
                         new HashMap<String, Object>() {{
-                            put("list", Arrays.asList("hello", "world", new byte[]{064, 067}));
+                            put("list", Arrays.asList("hello", "world", new byte[]{0x34, 0x37}));
                             put("zero", 0);
                         }},
                         13

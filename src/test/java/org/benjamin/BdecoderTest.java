@@ -79,11 +79,10 @@ public class BdecoderTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.AvoidUsingOctalValues")
     void decodeBytes() throws IOException {
         bdecoder = new Bdecoder(UTF_8, "4:2397");
 
-        assertEquals(bdecoder.readBytes(), new byte[]{062, 063, 071, 067});
+        assertEquals(bdecoder.readBytes(), new byte[]{0x32, 0x33, 0x39, 0x37});
     }
 
     @DataProvider
