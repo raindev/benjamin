@@ -6,7 +6,7 @@ import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.testng.Assert.assertEquals;
 
 @Test
