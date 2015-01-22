@@ -12,6 +12,7 @@ import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 
 @Test
+@SuppressWarnings("PMD.TooManyMethods")
 public class BencoderTest {
 
     ByteArrayOutputStream output;
