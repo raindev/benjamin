@@ -8,6 +8,7 @@
   <rule ref="rulesets/java/braces.xml"/>
   <rule ref="rulesets/java/codesize.xml"/>
   <rule ref="rulesets/java/imports.xml"/>
+  <rule ref="rulesets/java/strings.xml"/>
   <rule ref="rulesets/java/typeresolution.xml">
     <!-- Exclude the rule as it reports false positives on static wildcard imports due to a bug -->
     <!-- TODO should be removed when fixed in the next version of PMD -->

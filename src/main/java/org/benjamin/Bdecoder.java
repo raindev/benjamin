@@ -46,7 +46,7 @@ public class Bdecoder {
         StringBuilder number = new StringBuilder();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
-                throw new IllegalStateException("End of stream was reached prematurely");
+                throw streamEnded();
             }
             number.append((char) chr);
         }
@@ -92,7 +92,7 @@ public class Bdecoder {
         }
         byte[] byteString = new byte[length];
         if (inputStream.read(byteString) != length) {
-            throw new IllegalStateException("End of stream was reached prematurely during string reading");
+            throw streamEnded();
         }
         return byteString;
     }
@@ -114,7 +114,7 @@ public class Bdecoder {
         List<Object> list = new ArrayList<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
-                throw new IllegalStateException("End of stream was reached prematurely");
+                throw streamEnded();
             }
             inputStream.unread(chr);
             list.add(readObject(chr));
@@ -140,7 +140,7 @@ public class Bdecoder {
         SortedMap<String, Object> dictionary = new TreeMap<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
-                throw new IllegalStateException("End of stream was reached prematurely");
+                throw streamEnded();
             }
             inputStream.unread(chr);
             String string = readString();
@@ -162,5 +162,9 @@ public class Bdecoder {
             default:
                 return readString();
         }
+    }
+
+    private IllegalStateException streamEnded() {
+        return new IllegalStateException("End of stream was reached prematurely");
     }
 }
