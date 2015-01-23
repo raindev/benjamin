@@ -38,18 +38,8 @@ public class Bdecoder {
      * @throws IOException if an I/O error occurs
      */
     public long readInt() throws IOException {
-        int chr;
-        if ((chr = inputStream.read()) != 'i') {
-            throw new IllegalStateException("Unexpected character occurred instead of 'i' or end of stream reached: "
-                    + (char) chr);
-        }
-        StringBuilder number = new StringBuilder();
-        while ((chr = inputStream.read()) != 'e') {
-            if (chr == -1) {
-                throw streamEnded();
-            }
-            number.append((char) chr);
-        }
+        ensureFirstChar('i');
+        StringBuilder number = readUntil('e');
         if (number.charAt(0) == '0' && number.length() != 1) {
             throw new IllegalStateException("Zero padded integers aren't allowed");
         }
@@ -76,17 +66,9 @@ public class Bdecoder {
      * @throws IOException if an I/O error occurs
      */
     public byte[] readBytes() throws IOException {
-        int chr;
-        StringBuilder lengthString = new StringBuilder();
-        while ((chr = inputStream.read()) != ':') {
-            if (chr == -1) {
-                throw new IllegalStateException("End of stream was reached prematurely");
-            }
-            lengthString.append((char) chr);
-        }
         int length;
         try {
-            length = Integer.parseInt(lengthString.toString());
+            length = Integer.parseInt(readUntil(':').toString());
         } catch (NumberFormatException e) {
             throw new IllegalStateException("Length specifier was expected");
         }
@@ -95,6 +77,18 @@ public class Bdecoder {
             throw streamEnded();
         }
         return byteString;
+    }
+
+    private StringBuilder readUntil(char delimiter) throws IOException {
+        StringBuilder content = new StringBuilder();
+        int chr;
+        while ((chr = inputStream.read()) != delimiter) {
+            if (chr == -1) {
+                throw streamEnded();
+            }
+            content.append((char) chr);
+        }
+        return content;
     }
 
     /**
@@ -106,11 +100,8 @@ public class Bdecoder {
      * @throws IOException if an I/O error occurs
      */
     public List<?> readList() throws IOException {
+        ensureFirstChar('l');
         int chr;
-        if ((chr = inputStream.read()) != 'l') {
-            throw new IllegalStateException("Unexpected character occurred instead of 'l' or end of stream reached: "
-                    + (char) chr);
-        }
         List<Object> list = new ArrayList<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
@@ -132,11 +123,8 @@ public class Bdecoder {
      * @throws IOException if an I/O error occurs
      */
     public SortedMap<String, ?> readDictionary() throws IOException {
+        ensureFirstChar('d');
         int chr;
-        if ((chr = inputStream.read()) != 'd') {
-            throw new IllegalStateException("Unexpected character occurred instead of 'd' or end of stream reached: "
-                    + (char) chr);
-        }
         SortedMap<String, Object> dictionary = new TreeMap<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
@@ -149,6 +137,14 @@ public class Bdecoder {
             dictionary.put(string, readObject(chr));
         }
         return dictionary;
+    }
+
+    private void ensureFirstChar(char expected) throws IOException {
+        int chr;
+        if ((chr = inputStream.read()) != expected) {
+            throw new IllegalStateException("Unexpected character occurred instead of '"
+                + chr + "' or end of stream reached: " + (char) chr);
+        }
     }
 
     private Object readObject(int chr) throws IOException {
