@@ -39,9 +39,9 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(final long i) throws IOException {
+    public Bencoder encode(final long integer) throws IOException {
         outputStream.write('i');
-        outputStream.write(toAsciiString(i));
+        outputStream.write(toAsciiString(integer));
         outputStream.write('e');
         return this;
     }
@@ -53,10 +53,10 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(final String s) throws IOException {
-        outputStream.write(toAsciiString(s.length()));
+    public Bencoder encode(final String string) throws IOException {
+        outputStream.write(toAsciiString(string.length()));
         outputStream.write(':');
-        outputStream.write(s.getBytes(charset));
+        outputStream.write(string.getBytes(charset));
         return this;
     }
 

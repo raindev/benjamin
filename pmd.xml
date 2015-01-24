@@ -10,6 +10,7 @@
   <rule ref="rulesets/java/braces.xml"/>
   <rule ref="rulesets/java/codesize.xml"/>
   <rule ref="rulesets/java/imports.xml"/>
+  <rule ref="rulesets/java/naming.xml"/>
   <rule ref="rulesets/java/strictexception.xml"/>
   <rule ref="rulesets/java/strings.xml"/>
   <rule ref="rulesets/java/typeresolution.xml">
