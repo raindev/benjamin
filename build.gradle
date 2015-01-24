@@ -43,7 +43,7 @@ findbugs {
 
 pmd {
     toolVersion = "5.2.3"
-    ruleSetFiles = files("pmd.xml")
+    ruleSetFiles = files("pmd.xml", "pmd-main.xml")
 }
 
 task wrapper(type: Wrapper) {
