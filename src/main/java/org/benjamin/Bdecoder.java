@@ -14,7 +14,7 @@ public class Bdecoder {
     private final Charset charset;
     private final PushbackInputStream inputStream;
 
-    public Bdecoder(Charset charset, String bencodedString) {
+    public Bdecoder(final Charset charset, final String bencodedString) {
         this(charset,
                 new ByteArrayInputStream(bencodedString.getBytes(charset)));
     }
@@ -26,7 +26,7 @@ public class Bdecoder {
      * @param charset     charset used to decode {@code String}s
      * @param inputStream stream to decode data from
      */
-    public Bdecoder(Charset charset, InputStream inputStream) {
+    public Bdecoder(final Charset charset, final InputStream inputStream) {
         this.charset = charset;
         this.inputStream = new PushbackInputStream(inputStream);
     }
@@ -39,7 +39,7 @@ public class Bdecoder {
      */
     public long readInt() throws IOException {
         ensureFirstChar('i');
-        StringBuilder number = readUntil('e');
+        final StringBuilder number = readUntil('e');
         if (number.charAt(0) == '0' && number.length() != 1) {
             throw new IllegalStateException("Zero padded integers aren't allowed");
         }
@@ -72,15 +72,15 @@ public class Bdecoder {
         } catch (NumberFormatException e) {
             throw new IllegalStateException("Length specifier was expected");
         }
-        byte[] byteString = new byte[length];
+        final byte[] byteString = new byte[length];
         if (inputStream.read(byteString) != length) {
             throw streamEnded();
         }
         return byteString;
     }
 
-    private StringBuilder readUntil(char delimiter) throws IOException {
-        StringBuilder content = new StringBuilder();
+    private StringBuilder readUntil(final char delimiter) throws IOException {
+        final StringBuilder content = new StringBuilder();
         int chr;
         while ((chr = inputStream.read()) != delimiter) {
             if (chr == -1) {
@@ -102,7 +102,7 @@ public class Bdecoder {
     public List<?> readList() throws IOException {
         ensureFirstChar('l');
         int chr;
-        List<Object> list = new ArrayList<>();
+        final List<Object> list = new ArrayList<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
                 throw streamEnded();
@@ -125,13 +125,13 @@ public class Bdecoder {
     public SortedMap<String, ?> readDictionary() throws IOException {
         ensureFirstChar('d');
         int chr;
-        SortedMap<String, Object> dictionary = new TreeMap<>();
+        final SortedMap<String, Object> dictionary = new TreeMap<>();
         while ((chr = inputStream.read()) != 'e') {
             if (chr == -1) {
                 throw streamEnded();
             }
             inputStream.unread(chr);
-            String string = readString();
+            final String string = readString();
             chr = inputStream.read();
             inputStream.unread(chr);
             dictionary.put(string, readObject(chr));
@@ -139,7 +139,7 @@ public class Bdecoder {
         return dictionary;
     }
 
-    private void ensureFirstChar(char expected) throws IOException {
+    private void ensureFirstChar(final char expected) throws IOException {
         int chr;
         if ((chr = inputStream.read()) != expected) {
             throw new IllegalStateException("Unexpected character occurred instead of '"
@@ -147,7 +147,7 @@ public class Bdecoder {
         }
     }
 
-    private Object readObject(int chr) throws IOException {
+    private Object readObject(final int chr) throws IOException {
         switch (chr) {
             case 'i':
                 return readInt();

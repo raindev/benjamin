@@ -27,7 +27,7 @@ public class Bencoder {
      * @param charset      charset used to encode characters
      * @param outputStream stream to encode data to
      */
-    public Bencoder(Charset charset, OutputStream outputStream) {
+    public Bencoder(final Charset charset, final OutputStream outputStream) {
         this.charset = charset;
         this.outputStream = outputStream;
     }
@@ -39,7 +39,7 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(long i) throws IOException {
+    public Bencoder encode(final long i) throws IOException {
         outputStream.write('i');
         outputStream.write(toAsciiString(i));
         outputStream.write('e');
@@ -53,7 +53,7 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(String s) throws IOException {
+    public Bencoder encode(final String s) throws IOException {
         outputStream.write(toAsciiString(s.length()));
         outputStream.write(':');
         outputStream.write(s.getBytes(charset));
@@ -67,14 +67,14 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(byte[] bytes) throws IOException {
+    public Bencoder encode(final byte[] bytes) throws IOException {
         outputStream.write(toAsciiString(bytes.length));
         outputStream.write(':');
         outputStream.write(bytes);
         return this;
     }
 
-    private byte[] toAsciiString(Number number) {
+    private byte[] toAsciiString(final Number number) {
         return String.valueOf(number).getBytes(US_ASCII);
     }
 
@@ -87,9 +87,9 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(List<?> list) throws IOException {
+    public Bencoder encode(final List<?> list) throws IOException {
         outputStream.write('l');
-        for (Object object : list) {
+        for (final Object object : list) {
             encodeObject(object);
         }
         outputStream.write('e');
@@ -104,9 +104,9 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
-    public Bencoder encode(Map<String, ?> dictionary) throws IOException {
+    public Bencoder encode(final Map<String, ?> dictionary) throws IOException {
         outputStream.write('d');
-        for (Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
+        for (final Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
@@ -121,7 +121,7 @@ public class Bencoder {
      * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
-    private void encodeObject(Object object) throws IOException {
+    private void encodeObject(final Object object) throws IOException {
         if (object instanceof Integer || object instanceof Long || object instanceof Byte) {
             encode((int) object);
         } else if (object instanceof String) {
