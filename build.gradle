@@ -1,11 +1,16 @@
 apply plugin: 'java'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
+apply plugin: 'cpd'
 
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
 
 description = "Java Bencode minimalist library"
+
+ext {
+    pmdVersion = "5.2.3"
+}
 
 repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
@@ -17,6 +22,16 @@ dependencies {
         'net.sourceforge.pmd:pmd-core:5.2.3',
         'net.sourceforge.pmd:pmd-java:5.2.3'
     )
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.1'
+    }
 }
 
 test {
@@ -42,17 +57,28 @@ findbugs {
 }
 
 pmd {
-    toolVersion = "5.2.3"
+    toolVersion = pmdVersion
     ruleSetFiles = files("pmd.xml", "pmd-main.xml")
+}
+
+cpd {
+    toolVersion = pmdVersion
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
 
+tasks.cpd {
+    reports {
+        text.enabled = true
+        xml.enabled = false
+    }
+}
+
 tasks.withType(FindBugs) {
     reports {
-        xml.enabled = false
         html.enabled = true
+        xml.enabled = false
     }
 }
