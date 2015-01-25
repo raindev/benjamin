@@ -11,16 +11,35 @@ import java.util.*;
  * Bencode data decoder.
  */
 public class Bdecoder {
+
+    /**
+     * Used to decode {@code String}s.
+     *
+     * Bencode markers and numbers are ASCII-encoded.
+     */
     private final Charset charset;
+
+    /**
+     * A stream to decode data from.
+     */
     private final PushbackInputStream inputStream;
 
+    /**
+     * Creates decoder using {@code bencodedString} of specified {@code charset} as source of data.
+     *
+     * As Bencode is binary format, {@code bencodedString} is threated as source of bytes retrieved
+     * using {@code charset}. Decoded {@code String}s are presumed to have the same charset as
+     * {@code bencodedString}.
+     *
+     * @param charset        charset of the {@code bencodedString}
+     * @param bencodedString a {@code String} to use as source for the stream of Bencode data
+     */
     public Bdecoder(final Charset charset, final String bencodedString) {
-        this(charset,
-                new ByteArrayInputStream(bencodedString.getBytes(charset)));
+        this(charset, new ByteArrayInputStream(bencodedString.getBytes(charset)));
     }
 
     /**
-     * Creates encoder reading from {@code inputStream} using {@code charset} to decode
+     * Creates decoder reading from {@code inputStream} using {@code charset} to decode
      * character data.
      *
      * @param charset     charset used to decode {@code String}s
@@ -93,6 +112,7 @@ public class Bdecoder {
 
     /**
      * Decodes list from the stream.
+     *
      * All the strings within a list will be decoded as Strings of the specified encoding,
      * as opposed to raw byte arrays.
      *
@@ -115,6 +135,7 @@ public class Bdecoder {
 
     /**
      * Decodes dictionary from the stream.
+     *
      * Accordingly to the Bencode specification, dictionary keys are sorted as raw strings.
      * All the strings values in a dictionary will be decoded as Strings of the specified
      * encoding, as opposed to raw byte arrays.

@@ -9,4 +9,13 @@
   <exclude-pattern>.*/src/test/.*</exclude-pattern>
 
   <rule ref="rulesets/java/optimizations.xml"/>
+  <rule ref="rulesets/java/comments.xml"/>
+  <rule ref="rulesets/java/comments.xml/CommentSize">
+    <properties>
+      <property name="maxLineLength" value="100"/>
+      <!-- Default limit of 6 isn't quite reasonable -->
+      <!-- Also, the rule counts @returns, @throws, @param as lines -->
+      <property name="maxLines" value="15"/>
+    </properties>
+  </rule>
 </ruleset>

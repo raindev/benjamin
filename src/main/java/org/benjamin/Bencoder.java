@@ -15,14 +15,19 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public class Bencoder {
 
     /**
-     * Used to encode character data.
+     * Used to encode {@code String}s.
+     *
      * Bencode markers and numbers are ASCII-encoded.
      */
     private final Charset charset;
+
+    /**
+     * A stream to write encoded data to.
+     */
     private final OutputStream outputStream;
 
     /**
-     * Creates encoder writing to {@code outputStream} encoding {@code String}s using {@code charset}.
+     * Creates encoder writing to {@code outputStream} encoding {@code String}s in {@code charset}.
      *
      * @param charset      charset used to encode characters
      * @param outputStream stream to encode data to
@@ -35,7 +40,7 @@ public class Bencoder {
     /**
      * Encodes integer value to Bencode.
      *
-     * @param i integer number to encode
+     * @param integer integer number to encode
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
@@ -49,7 +54,7 @@ public class Bencoder {
     /**
      * Encodes string value to Bencode using {@code charset}.
      *
-     * @param s string to encode
+     * @param string string to encode
      * @throws IOException if an I/O error occurs
      * @return this Bencoder instance
      */
@@ -79,9 +84,11 @@ public class Bencoder {
     }
 
     /**
-     * Encodes list to Bencode. {@code list} should contain Bencode supported objects: {@code Integer}s,
-     * {@code String}s, {@code byte} arrays, {@code Map} with {@code String} keys and another {@code List}s
-     * containing elements which meet stated criteria.
+     * Encodes a list to Bencode.
+     *
+     * The {@code list} could contain objects of types supported in Bencode: {@code Integer}s,
+     * {@code String}s, {@code byte} arrays, {@code Map}s with {@code String} keys or another
+     * {@code List}s meet the same criteria.
      *
      * @param list list to encode
      * @throws IOException if an I/O error occurs
@@ -97,7 +104,9 @@ public class Bencoder {
     }
 
     /**
-     * Encodes dictionary to Bencode. Map values should meet the same requirements as for lists.
+     * Encodes dictionary to Bencode.
+     *
+     * Map values should meet the same requirements as for lists.
      * See {@link #encode(java.util.List)}.
      *
      * @param dictionary dictionary to encode represented as {@code Map}
