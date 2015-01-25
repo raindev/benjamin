@@ -9,6 +9,10 @@
   <rule ref="rulesets/java/basic.xml"/>
   <rule ref="rulesets/java/braces.xml"/>
   <rule ref="rulesets/java/codesize.xml"/>
+  <rule ref="rulesets/java/coupling.xml">
+    <!-- Gives a lot of false positives -->
+    <exclude name="LawOfDemeter"/>
+  </rule>
   <rule ref="rulesets/java/design.xml">
     <!-- They are really handy for in-place map construction in test -->
     <exclude name="NonStaticInitializer"/>
