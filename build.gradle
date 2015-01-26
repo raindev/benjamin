@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'cpd'
+apply plugin: 'checkstyle'
 
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
@@ -63,6 +64,11 @@ pmd {
 
 cpd {
     toolVersion = pmdVersion
+}
+
+checkstyle {
+    toolVersion = "6.2"
+    configFile = file("checkstyle.xml")
 }
 
 task wrapper(type: Wrapper) {
