@@ -5,10 +5,14 @@
 
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
+
     <module name="SuppressionFilter">
         <property name="file" value="checkstyle-suppressions.xml"/>
     </module>
 
+    <module name="FileLength"/>
+
+    <!-- Whitespaces -->
     <module name="FileTabCharacter"/>
     <module name="NewlineAtEndOfFile"/>
     <module name="RegexpSingleline">
@@ -21,6 +25,35 @@
             <property name="basicOffset" value="4"/>
         </module>
 
+        <!-- Size limits -->
+        <module name="LineLength">
+            <property name="max" value="100"/>
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+        <!-- Javadocs -->
         <module name="JavadocStyle"/>
+        <module name="JavadocMethod">
+          <property name="scope" value="public"/>
+        </module>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
+
+        <!-- Naming -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+        <!-- Imports -->
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
     </module>
 </module>

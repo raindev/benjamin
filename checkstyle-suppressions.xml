@@ -7,4 +7,5 @@
 <suppressions>
     <!-- Using custom indentation for test parameters -->
     <suppress checks="Indentation" files=".*/src/*."/>
+    <suppress checks="Javadoc(Type|Variable)" files=".*/src/*."/>
 </suppressions>

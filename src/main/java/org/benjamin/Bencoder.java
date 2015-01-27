@@ -142,7 +142,9 @@ public class Bencoder {
         } else if (object instanceof Map) {
             encode((Map<String, Object>) object);
         } else {
-            throw new IllegalArgumentException("Bencode unsupported type found in the arguments: " + object);
+            throw new IllegalArgumentException(
+                    "Object of Bencode unsupported type found in the arguments: '" + object +
+                    "' of type " + object.getClass());
         }
     }
 }
