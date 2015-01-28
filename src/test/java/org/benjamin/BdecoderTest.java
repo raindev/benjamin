@@ -18,16 +18,16 @@ public class BdecoderTest {
     @DataProvider
     Object[][] integers() {
         return new Object[][] {
-            { "i42e"     , 42             },
-            { "i0e"      , 0              },
-            { "i-47e"    , -47            },
+            { "i42e"        , 42          },
+            { "i0e"         , 0           },
+            { "i-47e"       , -47         },
             { "i8589934592e", 8589934592L }, // bytes in 8Gb
         };
     }
 
     @Test(dataProvider = "integers")
     void decodeInteger(String encodedInt, long decoded) throws IOException {
-        assertEquals( new Bdecoder(UTF_8, encodedInt).readInt(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedInt).readInt(), decoded);
     }
 
     @DataProvider
@@ -61,7 +61,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "strings")
     void decodeString(String encodedString, String decoded) throws IOException {
-        assertEquals( new Bdecoder(UTF_8, encodedString).readString(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedString).readString(), decoded);
     }
 
     @DataProvider
@@ -105,7 +105,7 @@ public class BdecoderTest {
     Object[][] lists() {
         return new Object[][] {
             { "le"          , Collections.emptyList()                      },
-            { "l4:lanei47ee", Arrays.asList( new Object[]{ "lane", 47L } ) },
+            { "l4:lanei47ee", Arrays.asList(new Object[]{ "lane", 47L })   },
             {
                 "l2:coi47eli47ei42eed4:lifei42eee",
                 Arrays.asList(
@@ -122,7 +122,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "lists")
     void decodeList(String encodedList, List<?> decoded) throws IOException {
-        assertEquals( new Bdecoder(UTF_8, encodedList).readList(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedList).readList(), decoded);
     }
 
     @DataProvider
@@ -166,7 +166,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "dictionaries")
     void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
-        assertEquals( new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
     }
 
     @DataProvider

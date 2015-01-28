@@ -12,7 +12,7 @@
 
     <module name="FileLength"/>
 
-    <!-- Whitespaces -->
+    <!-- Whitespace -->
     <module name="FileTabCharacter"/>
     <module name="NewlineAtEndOfFile"/>
     <module name="RegexpSingleline">
@@ -21,9 +21,6 @@
     </module>
 
     <module name="TreeWalker">
-        <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-        </module>
 
         <!-- Size limits -->
         <module name="LineLength">
@@ -55,5 +52,53 @@
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
+
+        <!-- Witespace -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+        </module>
+        <module name="EmptyForIteratorPad"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap">
+            <property name="option" value="eol"/> 
+        </module>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
+        <!-- Modifiers -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+        <!-- Classes -->
+        <module name="DeclarationOrder"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier"/>
+
+        <!-- Blocks -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="IllegalInstantiation"/>
+        <module name="MagicNumber"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/>
+        <module name="UpperEll"/>
+        <module name="TodoComment">
+          <property name="format" value="(?i)(TODO|FIXME):"/> 
+        </module>
+
     </module>
 </module>

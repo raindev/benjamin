@@ -163,8 +163,8 @@ public class Bdecoder {
     private void ensureFirstChar(final char expected) throws IOException {
         int chr;
         if ((chr = inputStream.read()) != expected) {
-            throw new IllegalStateException("Unexpected character occurred instead of '"
-                + chr + "' or end of stream reached: " + (char) chr);
+            throw new IllegalStateException("Unexpected character occurred instead of '" +
+                    chr + "' or end of stream reached: " + (char) chr);
         }
     }
 
