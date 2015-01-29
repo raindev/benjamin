@@ -7,14 +7,14 @@ apply plugin: 'checkstyle'
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
 
-description = "Java Bencode minimalist library"
+description = 'Java Bencode minimalist library'
 
 ext {
-    pmdVersion = "5.2.3"
+    pmdVersion = '5.2.3'
 }
 
 repositories {
-     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url 'http://repo.maven.apache.org/maven2' }
 }
 
 dependencies {
@@ -52,14 +52,14 @@ test {
 }
 
 findbugs {
-    toolVersion = "3.0.0"
-    effort = "max"
-    reportLevel = "high"
+    toolVersion = '3.0.0'
+    effort = 'max'
+    reportLevel = 'high'
 }
 
 pmd {
     toolVersion = pmdVersion
-    ruleSetFiles = files("pmd.xml", "pmd-main.xml")
+    ruleSetFiles = files('pmd.xml', 'pmd-main.xml')
 }
 
 cpd {
@@ -67,8 +67,8 @@ cpd {
 }
 
 checkstyle {
-    toolVersion = "6.2"
-    configFile = file("checkstyle.xml")
+    toolVersion = '6.2'
+    configFile = file('checkstyle.xml')
 }
 
 task wrapper(type: Wrapper) {
