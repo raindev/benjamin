@@ -45,9 +45,9 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(final long integer) throws IOException {
-        outputStream.write('i');
-        outputStream.write(toAsciiString(integer));
-        outputStream.write('e');
+        write('i');
+        write(integer);
+        write('e');
         return this;
     }
 
@@ -59,9 +59,9 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(final String string) throws IOException {
-        outputStream.write(toAsciiString(string.length()));
-        outputStream.write(':');
-        outputStream.write(string.getBytes(charset));
+        write(string.length());
+        write(':');
+        write(string.getBytes(charset));
         return this;
     }
 
@@ -73,14 +73,10 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(final byte[] bytes) throws IOException {
-        outputStream.write(toAsciiString(bytes.length));
-        outputStream.write(':');
-        outputStream.write(bytes);
+        write(bytes.length);
+        write(':');
+        write(bytes);
         return this;
-    }
-
-    private byte[] toAsciiString(final Number number) {
-        return String.valueOf(number).getBytes(US_ASCII);
     }
 
     /**
@@ -95,11 +91,11 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(final List<?> list) throws IOException {
-        outputStream.write('l');
+        write('l');
         for (final Object object : list) {
             encodeObject(object);
         }
-        outputStream.write('e');
+        write('e');
         return this;
     }
 
@@ -114,19 +110,19 @@ public class Bencoder {
      * @return this Bencoder instance
      */
     public Bencoder encode(final Map<String, ?> dictionary) throws IOException {
-        outputStream.write('d');
+        write('d');
         for (final Map.Entry<String, Object> entry : new TreeMap<>(dictionary).entrySet()) {
             encode(entry.getKey());
             encodeObject(entry.getValue());
         }
-        outputStream.write('e');
+        write('e');
         return this;
     }
 
     /**
      * All black magic goes here.
      *
-     * @param object object to encode in Bencode
+     * @param object object to encode to Bencode
      * @throws IOException if an I/O error occurs
      */
     @SuppressWarnings("unchecked")
@@ -146,5 +142,17 @@ public class Bencoder {
                     "Object of Bencode unsupported type found in the arguments: '" + object +
                     "' of type " + object.getClass());
         }
+    }
+
+    private void write(final Number number) throws IOException {
+        write(String.valueOf(number).getBytes(US_ASCII));
+    }
+
+    private void write(final char chr) throws IOException {
+        outputStream.write(chr);
+    }
+
+    private void write(final byte[] bytes) throws IOException {
+        outputStream.write(bytes);
     }
 }
