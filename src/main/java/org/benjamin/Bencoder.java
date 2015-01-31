@@ -127,9 +127,9 @@ public class Bencoder {
      */
     @SuppressWarnings("unchecked")
     private void encodeObject(final Object object) throws IOException {
-        if (object instanceof Long || object instanceof Integer
-                || object instanceof Short || object instanceof Byte) {
-            encode(((Number)object).longValue());
+        if (object instanceof Long || object instanceof Integer ||
+                object instanceof Short || object instanceof Byte) {
+            encode(((Number) object).longValue());
         } else if (object instanceof String) {
             encode((String) object);
         } else if (object.getClass().equals(byte[].class)) {

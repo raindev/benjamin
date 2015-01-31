@@ -74,14 +74,14 @@ public class BencoderTest {
         return new Object[][] {
             { Collections.emptyList()                       , "le"                  },
             { Arrays.asList(new Object[]{87L, "watermill⌘"}), "li87e10:watermill⌘e" },
-            { Arrays.asList((byte)4, "hey")                 , "li4e3:heye"          },
+            { Arrays.asList((byte) 4, "hey")                 , "li4e3:heye"          },
             {
                 Arrays.asList(
                         new HashMap<String, Object>() {{
                             put("list", Arrays.asList("hello", "world", new byte[]{0x34, 0x37}));
                             put("zero", 0);
                         }},
-                        (short)33
+                        (short) 33
                 ),
                 "ld4:listl5:hello5:world2:47e4:zeroi0eei33ee"
             }
@@ -114,7 +114,7 @@ public class BencoderTest {
             {
                 // enforce order reverse to expected in result
                 new LinkedHashMap<String, Object>() {{
-                    put("end", (short)92);
+                    put("end", (short) 92);
                     put("start", 42);
                     put("anupper", -12);
                 }},
@@ -122,7 +122,7 @@ public class BencoderTest {
             },
             {
                 new HashMap<String, Object>() {{
-                    put("life", (byte)9);
+                    put("life", (byte) 9);
                     put("list", Arrays.asList("hello", "world", 0, -12));
                     put("inner", new HashMap<String, String>() {{
                         put("key", "value");
