@@ -72,17 +72,18 @@ public class BencoderTest {
     @DataProvider
     Object[][] lists() {
         return new Object[][] {
-            { Collections.emptyList()                      , "le"                  },
-            { Arrays.asList(new Object[]{47, "watermill⌘"}), "li47e10:watermill⌘e" },
+            { Collections.emptyList()                       , "le"                  },
+            { Arrays.asList(new Object[]{87L, "watermill⌘"}), "li87e10:watermill⌘e" },
+            { Arrays.asList((byte)4, "hey")                 , "li4e3:heye"          },
             {
                 Arrays.asList(
                         new HashMap<String, Object>() {{
                             put("list", Arrays.asList("hello", "world", new byte[]{0x34, 0x37}));
                             put("zero", 0);
                         }},
-                        13
+                        (short)33
                 ),
-                "ld4:listl5:hello5:world2:47e4:zeroi0eei13ee"
+                "ld4:listl5:hello5:world2:47e4:zeroi0eei33ee"
             }
         };
     }
@@ -105,30 +106,30 @@ public class BencoderTest {
             { Collections.emptyMap(), "de" },
             {
                 new HashMap<String, Object>() {{
-                    put("life", 47);
+                    put("life", 40L);
                     put("grass", "green");
                 }},
-                "d5:grass5:green4:lifei47ee"
+                "d5:grass5:green4:lifei40ee"
             },
             {
                 // enforce order reverse to expected in result
                 new LinkedHashMap<String, Object>() {{
-                    put("end", 47);
+                    put("end", (short)92);
                     put("start", 42);
                     put("anupper", -12);
                 }},
-                "d7:anupperi-12e3:endi47e5:starti42ee"
+                "d7:anupperi-12e3:endi92e5:starti42ee"
             },
             {
                 new HashMap<String, Object>() {{
-                    put("life", 47);
+                    put("life", (byte)9);
                     put("list", Arrays.asList("hello", "world", 0, -12));
                     put("inner", new HashMap<String, String>() {{
                         put("key", "value");
                     }});
                     put("sk❅", "grey");
                 }},
-                "d5:innerd3:key5:valuee4:lifei47e4:listl5:hello5:worldi0ei-12ee3:sk❅4:greye"
+                "d5:innerd3:key5:valuee4:lifei9e4:listl5:hello5:worldi0ei-12ee3:sk❅4:greye"
             }
         };
     }
