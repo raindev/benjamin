@@ -11,7 +11,7 @@
     <suppress checks="NoWhitespaceAfter" files=".*/src/test/*."/>
     <suppress checks="WhitespaceAround" files=".*/src/test/*."/>
     <!-- For generic wildcard: <?,?> -->
-    <suppress checks="WhitespaceAfter" files="BdecoderTest" lines="168"/>
+    <suppress checks="WhitespaceAfter" files="BdecoderTest" lines="169"/>
     <!-- Byte array literals are used in tests -->
     <suppress checks="MagicNumber" files=".*/src/test/*."/>
     <!-- Visibility modifiers make no sensor for tests and only create clutter -->

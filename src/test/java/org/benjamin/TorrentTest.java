@@ -23,7 +23,7 @@ public class TorrentTest {
         decoder = new Bdecoder(US_ASCII, stream);
     }
 
-    @Test
+    @Test(enabled = false)
     @SuppressWarnings("unchecked")
     void decodeTorrent() throws IOException {
         Map<String, ?> torrent = decoder.readDictionary();
