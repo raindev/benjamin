@@ -143,7 +143,7 @@ public class Bdecoder {
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public SortedMap<String, ?> readDictionary() throws IOException {
+    public SortedMap<String, Object> readDictionary() throws IOException {
         ensureFirstChar('d');
         int chr;
         final SortedMap<String, Object> dictionary = new TreeMap<>();
