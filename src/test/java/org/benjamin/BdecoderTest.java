@@ -8,6 +8,7 @@ import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.testng.Assert.assertEquals;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 @Test
 @SuppressWarnings("PMD.TooManyMethods")
@@ -122,7 +123,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "lists")
     void decodeList(String encodedList, List<?> decoded) throws IOException {
-        assertEquals(new Bdecoder(UTF_8, encodedList).readList(), decoded);
+        assertReflectionEquals(new Bdecoder(UTF_8, encodedList).readList(), decoded);
     }
 
     @DataProvider
@@ -152,7 +153,6 @@ public class BdecoderTest {
                     put("sun", "grass".getBytes(UTF_8));
                 }}
             },
-            // Inner byte arrays aren't compared by Assert.assertArrayEquals however they should be
             {
                 "d4:listl2:co4:worke10:dictionaryd3:key5:valueee",
                 new HashMap<String, Object>() {{
@@ -167,7 +167,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "dictionaries")
     void decodeDictionary(String encodedDictionary, Map<?,?> decoded) throws IOException {
-        assertEquals(new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
+        assertReflectionEquals(new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
     }
 
     @DataProvider
