@@ -20,6 +20,7 @@ repositories {
 dependencies {
     testCompile group: 'org.testng', name: 'testng', version:'6.8.13'
     testCompile group: 'org.unitils', name: 'unitils-core', version:'3.4.2'
+    testCompile group: 'commons-io', name: 'commons-io', version:'2.4'
     pmd(
         'net.sourceforge.pmd:pmd-core:5.2.3',
         'net.sourceforge.pmd:pmd-java:5.2.3'

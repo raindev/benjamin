@@ -1,10 +1,12 @@
 package org.benjamin;
 
-import org.testng.annotations.Test;
+import org.apache.commons.io.IOUtils;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -15,18 +17,21 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Test
 public class TorrentTest {
 
-    InputStream stream;
     Bdecoder decoder;
+    Bencoder encoder;
+    Map<String, Object> torrent;
+    ByteArrayOutputStream encodedTorrent;
 
     @BeforeMethod
     void setUp() {
-        stream = getClass().getResourceAsStream("/ubuntu-14.10-desktop-amd64.iso.torrent");
-        decoder = new Bdecoder(UTF_8, stream);
+        decoder = new Bdecoder(UTF_8, torrentFileStream());
+        encodedTorrent = new ByteArrayOutputStream();
+        encoder = new Bencoder(UTF_8, encodedTorrent);
     }
 
     @Test
     void decodeTorrent() throws IOException {
-        Map<String, Object> torrent = decoder.readDictionary();
+        torrent = decoder.readDictionary();
         assertEquals(torrent.get("announce"), "http://torrent.ubuntu.com:6969/announce"
                 .getBytes(UTF_8));
         assertEquals(torrent.get("comment"), "Ubuntu CD releases.ubuntu.com"
@@ -51,4 +56,19 @@ public class TorrentTest {
         // concatenation of hash sums of the file pieces
         assertEquals(((byte[]) info.get("pieces")).length, 44380);
     }
+
+    @Test(dependsOnMethods = "decodeTorrent")
+    void encodeTorrent() throws IOException {
+        encoder.encode(torrent);
+        assertEquals(
+                IOUtils.toByteArray(torrentFileStream()),
+                encodedTorrent.toByteArray(),
+                "re-encoded torrent should be equal to original file");
+    }
+
+    InputStream torrentFileStream() {
+        return getClass()
+            .getResourceAsStream("/ubuntu-14.10-desktop-amd64.iso.torrent");
+    }
+
 }
