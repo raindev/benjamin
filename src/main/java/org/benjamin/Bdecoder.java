@@ -119,7 +119,7 @@ public class Bdecoder {
      * @return list of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public List<?> readList() throws IOException {
+    public List<Object> readList() throws IOException {
         ensureFirstChar('l');
         int chr;
         final List<Object> list = new ArrayList<>();
