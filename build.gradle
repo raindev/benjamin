@@ -3,6 +3,7 @@ apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'cpd'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
@@ -73,6 +74,10 @@ checkstyle {
     configFile = file('checkstyle.xml')
 }
 
+jacoco {
+    toolVersion = '0.7.1.201405082137'
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.6'
 }
@@ -89,4 +94,8 @@ tasks.withType(FindBugs) {
         html.enabled = true
         xml.enabled = false
     }
+}
+
+tasks.jacocoTestReport {
+    dependsOn 'test'    // skips after clean build otherwise
 }
