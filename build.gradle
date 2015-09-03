@@ -4,6 +4,7 @@ apply plugin: 'pmd'
 apply plugin: 'cpd'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
 
 group = 'org.benjamin'
 version = '0.1-SNAPSHOT'
@@ -35,6 +36,7 @@ buildscript {
 
     dependencies {
         classpath 'de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.1'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
     }
 }
 
@@ -76,6 +78,13 @@ checkstyle {
 
 jacoco {
     toolVersion = '0.7.1.201405082137'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled =  true
+        xml.enabled =  true // needed for coveralls
+    }
 }
 
 task wrapper(type: Wrapper) {
