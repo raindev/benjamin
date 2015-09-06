@@ -72,7 +72,7 @@ cpd {
 }
 
 checkstyle {
-    toolVersion '6.2'
+    toolVersion '6.10.1'
     configFile file('checkstyle.xml')
 }
 
@@ -88,7 +88,7 @@ jacocoTestReport {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion '2.6'
+    gradleVersion '2.7-rc-2'
 }
 
 tasks.cpd {
