@@ -12,7 +12,7 @@ version '0.1-SNAPSHOT'
 description 'Java Bencode minimalist library'
 
 ext {
-    pmdVersion = '5.2.3'
+    pmdVersion = '5.3.3'
 }
 
 repositories {
@@ -57,7 +57,7 @@ test {
 }
 
 findbugs {
-    toolVersion '3.0.0'
+    toolVersion '3.0.1'
     effort 'max'
     reportLevel 'high'
 }
