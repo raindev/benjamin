@@ -29,7 +29,7 @@ public class TorrentTest {
         encoder = new Bencoder(UTF_8, encodedTorrent);
     }
 
-    @Test
+    @Test(enabled = false)
     void decodeTorrent() throws IOException {
         torrent = decoder.readDictionary();
         assertEquals(torrent.get("announce"), "http://torrent.ubuntu.com:6969/announce"
@@ -57,7 +57,7 @@ public class TorrentTest {
         assertEquals(((byte[]) info.get("pieces")).length, 44380);
     }
 
-    @Test(dependsOnMethods = "decodeTorrent")
+    @Test(enabled = false, dependsOnMethods = "decodeTorrent")
     void encodeTorrent() throws IOException {
         encoder.encode(torrent);
         assertEquals(

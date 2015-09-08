@@ -177,7 +177,7 @@ public class Bdecoder {
             case 'd':
                 return readDictionary();
             default:
-                return readBytes();
+                return readString();
         }
     }
 

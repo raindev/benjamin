@@ -106,13 +106,13 @@ public class BdecoderTest {
     Object[][] lists() {
         return new Object[][] {
             { "le"          , Collections.emptyList()                      },
-            { "l4:lanei47ee", Arrays.asList("lane".getBytes(UTF_8), 47L)   },
+            { "l4:lanei47ee", Arrays.asList("lane", 47L)   },
             {
                 "l2:coi47el5:spacei42eed4:lifei42eee",
                 Arrays.asList(
-                    "co".getBytes(UTF_8),
+                    "co",
                     47L,
-                    Arrays.asList("space".getBytes(UTF_8), 42L),
+                    Arrays.asList("space", 42L),
                     new HashMap<String, Long>() {{
                         put("life", 42L);
                     }}
@@ -148,17 +148,17 @@ public class BdecoderTest {
             {
                 "d3:key5:value3:sun5:grass1:ni5ee",
                 new HashMap<String, Object>() {{
-                    put("key", "value".getBytes(UTF_8));
+                    put("key", "value");
                     put("n", 5L);
-                    put("sun", "grass".getBytes(UTF_8));
+                    put("sun", "grass");
                 }}
             },
             {
                 "d4:listl2:co4:worke10:dictionaryd3:key5:valueee",
                 new HashMap<String, Object>() {{
-                    put("list", Arrays.asList("co".getBytes(UTF_8), "work".getBytes(UTF_8)));
+                    put("list", Arrays.asList("co", "work"));
                     put("dictionary", new HashMap<String, Object>() {{
-                        put("key", "value".getBytes(UTF_8));
+                        put("key", "value");
                     }});
                 }}
             }
