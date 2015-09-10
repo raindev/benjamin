@@ -31,7 +31,7 @@ public class TorrentTest {
 
     @Test(enabled = false)
     void decodeTorrent() throws IOException {
-        torrent = decoder.readDictionary();
+        torrent = decoder.decodeDict();
         assertEquals(torrent.get("announce"), "http://torrent.ubuntu.com:6969/announce"
                 .getBytes(UTF_8));
         assertEquals(torrent.get("comment"), "Ubuntu CD releases.ubuntu.com"

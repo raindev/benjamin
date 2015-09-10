@@ -28,7 +28,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "integers")
     void decodeInteger(String encodedInt, long decoded) throws IOException {
-        assertEquals(new Bdecoder(UTF_8, encodedInt).readInt(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedInt).decodeInt(), decoded);
     }
 
     @DataProvider
@@ -46,7 +46,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "invalidIntegers", expectedExceptions = IllegalStateException.class)
     void decodeInvalidInteger(String invalidInteger) throws IOException {
-        new Bdecoder(UTF_8, invalidInteger).readInt();
+        new Bdecoder(UTF_8, invalidInteger).decodeInt();
     }
 
     @DataProvider
@@ -62,7 +62,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "strings")
     void decodeString(String encodedString, String decoded) throws IOException {
-        assertEquals(new Bdecoder(UTF_8, encodedString).readString(), decoded);
+        assertEquals(new Bdecoder(UTF_8, encodedString).decodeString(), decoded);
     }
 
     @DataProvider
@@ -77,14 +77,14 @@ public class BdecoderTest {
 
     @Test(dataProvider = "invalidStrings", expectedExceptions = IllegalStateException.class)
     void decodeInvalidString(String invalidString) throws IOException {
-        new Bdecoder(UTF_8, invalidString).readString();
+        new Bdecoder(UTF_8, invalidString).decodeString();
     }
 
     @Test
     void decodeBytes() throws IOException {
         bdecoder = new Bdecoder(UTF_8, "4:2397");
 
-        assertEquals(bdecoder.readBytes(), new byte[]{0x32, 0x33, 0x39, 0x37});
+        assertEquals(bdecoder.decodeBytes(), new byte[]{0x32, 0x33, 0x39, 0x37});
     }
 
     @DataProvider
@@ -99,7 +99,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "invalidBytes", expectedExceptions = IllegalStateException.class)
     void decodeInvalidBytes(String invalidBytes) throws IOException {
-        new Bdecoder(UTF_8, invalidBytes).readBytes();
+        new Bdecoder(UTF_8, invalidBytes).decodeBytes();
     }
 
     @DataProvider
@@ -123,7 +123,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "lists")
     void decodeList(String encodedList, List<Object> decoded) throws IOException {
-        assertReflectionEquals(new Bdecoder(UTF_8, encodedList).readList(), decoded);
+        assertReflectionEquals(new Bdecoder(UTF_8, encodedList).decodeList(), decoded);
     }
 
     @DataProvider
@@ -138,7 +138,7 @@ public class BdecoderTest {
     @Test(dataProvider = "invalidLists",
             expectedExceptions = IllegalStateException.class)
     void decodeInvalidList(String invalidList) throws IOException {
-        new Bdecoder(UTF_8, invalidList).readList();
+        new Bdecoder(UTF_8, invalidList).decodeList();
     }
 
     @DataProvider
@@ -170,7 +170,7 @@ public class BdecoderTest {
             String encodedDictionary,
             Map<String, Object> decoded
     ) throws IOException {
-        assertReflectionEquals(new Bdecoder(UTF_8, encodedDictionary).readDictionary(), decoded);
+        assertReflectionEquals(new Bdecoder(UTF_8, encodedDictionary).decodeDict(), decoded);
     }
 
     @DataProvider
@@ -184,6 +184,6 @@ public class BdecoderTest {
 
     @Test(dataProvider = "invalidDictionaries", expectedExceptions = IllegalStateException.class)
     void decodeInvalidDictionary(String invalidDictionary) throws IOException {
-        new Bdecoder(UTF_8, invalidDictionary).readDictionary();
+        new Bdecoder(UTF_8, invalidDictionary).decodeDict();
     }
 }

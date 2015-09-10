@@ -56,7 +56,7 @@ public class Bdecoder {
      * @return decoded integer
      * @throws IOException if an I/O error occurs
      */
-    public long readInt() throws IOException {
+    public long decodeInt() throws IOException {
         ensureFirstChar('i');
         final StringBuilder number = readUntil('e');
         if (number.charAt(0) == '0' && number.length() != 1) {
@@ -74,8 +74,8 @@ public class Bdecoder {
      * @return decoded string
      * @throws IOException if an I/O error occurs
      */
-    public String readString() throws IOException {
-        return new String(readBytes(), charset);
+    public String decodeString() throws IOException {
+        return new String(decodeBytes(), charset);
     }
 
     /**
@@ -84,7 +84,7 @@ public class Bdecoder {
      * @return decoded {@code byte} array
      * @throws IOException if an I/O error occurs
      */
-    public byte[] readBytes() throws IOException {
+    public byte[] decodeBytes() throws IOException {
         int length;
         try {
             length = Integer.parseInt(readUntil(':').toString());
@@ -119,7 +119,7 @@ public class Bdecoder {
      * @return list of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public List<Object> readList() throws IOException {
+    public List<Object> decodeList() throws IOException {
         ensureFirstChar('l');
         int chr;
         final List<Object> list = new ArrayList<>();
@@ -128,7 +128,7 @@ public class Bdecoder {
                 throw streamEnded();
             }
             inputStream.unread(chr);
-            list.add(readObject(chr));
+            list.add(decodeObject(chr));
         }
         return list;
     }
@@ -143,7 +143,7 @@ public class Bdecoder {
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public SortedMap<String, Object> readDictionary() throws IOException {
+    public SortedMap<String, Object> decodeDict() throws IOException {
         ensureFirstChar('d');
         int chr;
         final SortedMap<String, Object> dictionary = new TreeMap<>();
@@ -152,10 +152,10 @@ public class Bdecoder {
                 throw streamEnded();
             }
             inputStream.unread(chr);
-            final String string = readString();
+            final String string = decodeString();
             chr = inputStream.read();
             inputStream.unread(chr);
-            dictionary.put(string, readObject(chr));
+            dictionary.put(string, decodeObject(chr));
         }
         return dictionary;
     }
@@ -168,16 +168,16 @@ public class Bdecoder {
         }
     }
 
-    private Object readObject(final int chr) throws IOException {
+    private Object decodeObject(final int chr) throws IOException {
         switch (chr) {
             case 'i':
-                return readInt();
+                return decodeInt();
             case 'l':
-                return readList();
+                return decodeList();
             case 'd':
-                return readDictionary();
+                return decodeDict();
             default:
-                return readString();
+                return decodeString();
         }
     }
 
