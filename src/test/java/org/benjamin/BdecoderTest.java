@@ -123,7 +123,7 @@ public class BdecoderTest {
 
     @Test(dataProvider = "lists")
     void decodeList(String encodedList, List<Object> decoded) throws IOException {
-        assertReflectionEquals(new Bdecoder(UTF_8, encodedList).decodeList(), decoded);
+        assertReflectionEquals(decoded, new Bdecoder(UTF_8, encodedList).decodeList());
     }
 
     @DataProvider
@@ -170,7 +170,7 @@ public class BdecoderTest {
             String encodedDictionary,
             Map<String, Object> decoded
     ) throws IOException {
-        assertReflectionEquals(new Bdecoder(UTF_8, encodedDictionary).decodeDict(), decoded);
+        assertReflectionEquals(decoded, new Bdecoder(UTF_8, encodedDictionary).decodeDict());
     }
 
     @DataProvider
