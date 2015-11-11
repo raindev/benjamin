@@ -6,6 +6,8 @@ apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 
+sourceCompatibility = 1.7
+
 group 'org.benjamin'
 version '0.1-SNAPSHOT'
 

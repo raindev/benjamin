@@ -180,10 +180,13 @@ public class Bdecoder {
     }
 
     private String[] innerByteStrings(final String key, final List<String> byteStringsList) {
-        return byteStringsList.stream()
-            .filter(propertyName -> propertyName.startsWith(key))
-            .map(propertyName -> propertyName.substring(key.length() + 1))
-            .toArray(String[]::new);
+        final List<String> result = new ArrayList<>();
+        for (final String propertyName : byteStringsList) {
+            if (propertyName.startsWith(key)) {
+                result.add(propertyName.substring(key.length() + 1));
+            }
+        }
+        return result.toArray(new String[result.size()]);
     }
 
     private Object decodeObject(final int chr) throws IOException {
