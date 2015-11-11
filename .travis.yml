@@ -4,6 +4,8 @@ jdk:
   - oraclejdk7
   - openjdk7
 
+install: true
+
 script: ./gradlew check javadoc
 after_success: ./gradlew jacocoTestReport coveralls
 
