@@ -9,6 +9,4 @@ Benjamin
 
 ##### Why to use Benjamin instead of other Bencode Java libraries?
 
-*Use at your own risk. benjamin API isn't stabilised yet and will change in non backward compatible way.*
-
 It has the simplest API imaginable. All too familiar Java collections. There should be no learning curve for such a simple thing as a Bencoding library, I'm sure. No additional dependencies. Enjoy!
