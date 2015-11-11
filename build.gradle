@@ -9,8 +9,8 @@ apply plugin: 'com.github.kt3k.coveralls'
 targetCompatibility = 1.7
 sourceCompatibility = 1.7
 
-group 'org.benjamin'
-version '0.1-SNAPSHOT'
+group 'io.github.raindev'
+version '1.0.0'
 
 description 'Java Bencode minimalist library'
 
@@ -110,4 +110,70 @@ tasks.withType(FindBugs) {
 
 tasks.jacocoTestReport {
     dependsOn 'test'    // skips after clean build otherwise
+}
+
+// release configuration
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'benjamin'
+        packaging 'jar'
+        description description
+        url 'https://github.com/raindev/benjamin'
+
+        scm {
+          connection 'scm:git:git@github.com:raindev/benjamin.git'
+          developerConnection 'scm:git:git@github.com:raindev/benjamin.git'
+          url 'git@github.com:raindev/benjamin.git'
+        }
+
+        licenses {
+          license {
+            name 'The MIT License'
+            url 'http://opensource.org/licenses/MIT'
+          }
+        }
+
+        developers {
+          developer {
+            id 'raindev'
+            name 'Andrew Barchuk'
+            email 'raindev@icloud.com'
+          }
+        }
+      }
+    }
+  }
 }
