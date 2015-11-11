@@ -29,35 +29,30 @@ public class TorrentTest {
         encoder = new Bencoder(UTF_8, encodedTorrent);
     }
 
-    @Test(enabled = false)
+    @Test
     void decodeTorrent() throws IOException {
-        torrent = decoder.decodeDict();
-        assertEquals(torrent.get("announce"), "http://torrent.ubuntu.com:6969/announce"
-                .getBytes(UTF_8));
-        assertEquals(torrent.get("comment"), "Ubuntu CD releases.ubuntu.com"
-                .getBytes(UTF_8));
+        torrent = decoder.decodeDict("info.pieces");
+        assertEquals(torrent.get("announce"), "http://torrent.ubuntu.com:6969/announce");
+        assertEquals(torrent.get("comment"), "Ubuntu CD releases.ubuntu.com");
         assertReflectionEquals(
                 torrent.get("announce-list"),
                 asList(
                     // first announce tier
-                    asList("http://torrent.ubuntu.com:6969/announce"
-                        .getBytes(UTF_8)),
+                    asList("http://torrent.ubuntu.com:6969/announce"),
                     // backup announce tier
-                    asList("http://ipv6.torrent.ubuntu.com:6969/announce"
-                        .getBytes(UTF_8))));
+                    asList("http://ipv6.torrent.ubuntu.com:6969/announce")));
         assertEquals(torrent.get("creation date"), 1414070124L);    // 10.23.2014 1:15pm
 
         @SuppressWarnings("unchecked")
         Map<String, Object> info = (Map<String, Object>) torrent.get("info");
         assertEquals(info.get("length"), 1162936320L);  // 1.08 Gb
-        assertEquals(info.get("name"), "ubuntu-14.10-desktop-amd64.iso"
-                .getBytes(UTF_8));
+        assertEquals(info.get("name"), "ubuntu-14.10-desktop-amd64.iso");
         assertEquals(info.get("piece length"), 524288L);
         // concatenation of hash sums of the file pieces
         assertEquals(((byte[]) info.get("pieces")).length, 44380);
     }
 
-    @Test(enabled = false, dependsOnMethods = "decodeTorrent")
+    @Test(dependsOnMethods = "decodeTorrent")
     void encodeTorrent() throws IOException {
         encoder.encode(torrent);
         assertEquals(

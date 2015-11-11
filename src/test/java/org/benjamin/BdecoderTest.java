@@ -6,7 +6,7 @@ import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.charset.StandardCharsets.*;
 import static org.testng.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -171,6 +171,39 @@ public class BdecoderTest {
             Map<String, Object> decoded
     ) throws IOException {
         assertReflectionEquals(decoded, new Bdecoder(UTF_8, encodedDictionary).decodeDict());
+    }
+
+    @DataProvider
+    Object[][] binaryDictionaries() {
+        return new Object[][] {
+            {
+               new String[]{"bin"},
+               "d3:str2:Δ3:bin5:bytese",
+               new HashMap<String, Object>() {{
+                    put("str", "Δ");
+                    put("bin", "bytes".getBytes(US_ASCII));
+               }}
+            },
+            {
+                new String[]{"dict.bin"},
+                "d4:dictd3:bin5:bytese3:str6:stringe",
+                new HashMap<String, Object>() {{
+                    put("dict", new HashMap<String, Object>(){{
+                        put("bin", "bytes".getBytes(US_ASCII));
+                    }});
+                    put("str", "string");
+                }}
+            }
+        };
+    }
+
+    @Test(dataProvider = "binaryDictionaries")
+    void decodeDictionaryBinary(String[] byteStrings, String encodedDictionary,
+            Map<String, Object> decoded) throws IOException {
+        assertReflectionEquals(
+            decoded,
+            new Bdecoder(UTF_8, encodedDictionary).decodeDict(byteStrings)
+        );
     }
 
     @DataProvider

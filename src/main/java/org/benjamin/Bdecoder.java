@@ -137,14 +137,19 @@ public class Bdecoder {
      * Decodes dictionary from the stream.
      *
      * Accordingly to the Bencode specification, dictionary keys are sorted as raw strings.
-     * All the strings values in a dictionary will be decoded as Strings of the specified
-     * encoding, as opposed to raw byte arrays.
+     * All the strings values in the will be decoded as Strings of the specified
+     * encoding, as opposed to raw byte arrays, unless they appear in {@code byteString}.
+     * Binary properties in {@code byteStrings} could be specified hierarchically, e.g.
+     * {@code "info.pieces"} where "info" is the key of inner dictionary and "pieces" is
+     * a byte string property inside that dictionary.
      *
+     * @param  byteStrings array of string properties to parse as raw bytes
      * @return dictionary of decoded values
      * @throws IOException if an I/O error occurs
      */
-    public SortedMap<String, Object> decodeDict() throws IOException {
+    public SortedMap<String, Object> decodeDict(final String... byteStrings) throws IOException {
         ensureFirstChar('d');
+        final List<String> byteStringsList = Arrays.asList(byteStrings);
         int chr;
         final SortedMap<String, Object> dictionary = new TreeMap<>();
         while ((chr = inputStream.read()) != 'e') {
@@ -152,10 +157,16 @@ public class Bdecoder {
                 throw streamEnded();
             }
             inputStream.unread(chr);
-            final String string = decodeString();
+            final String key = decodeString();
             chr = inputStream.read();
             inputStream.unread(chr);
-            dictionary.put(string, decodeObject(chr));
+            dictionary.put(
+                    key,
+                    chr == 'd' ?
+                        decodeDict(innerByteStrings(key, byteStringsList)) :
+                        byteStringsList.contains(key) ?
+                            decodeBytes() :
+                            decodeObject(chr));
         }
         return dictionary;
     }
@@ -166,6 +177,13 @@ public class Bdecoder {
             throw new IllegalStateException("Unexpected character occurred instead of '" +
                     chr + "' or end of stream reached: " + (char) chr);
         }
+    }
+
+    private String[] innerByteStrings(final String key, final List<String> byteStringsList) {
+        return byteStringsList.stream()
+            .filter(propertyName -> propertyName.startsWith(key))
+            .map(propertyName -> propertyName.substring(key.length() + 1))
+            .toArray(String[]::new);
     }
 
     private Object decodeObject(final int chr) throws IOException {
