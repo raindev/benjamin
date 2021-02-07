@@ -1,3 +1,9 @@
+# Archieved
+
+The project is no longer maintained. It's available from the Maven Central as
+`io.github.raindev:benjamin:1.0.0` but if you find the library useful it's best
+to fork it or to bundle the code with your project.
+
 Benjamin
 =======
 
